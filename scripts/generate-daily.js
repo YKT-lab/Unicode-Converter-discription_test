@@ -631,6 +631,311 @@ function makeSvgGlyph(
 
 
 /* =========================================
+   Unicode → 文字 と同じフォント優先順位
+========================================= */
+
+function inCodePointRange(
+  codePoint,
+  start,
+  end
+) {
+
+  return (
+    codePoint >=
+      start
+    &&
+    codePoint <=
+      end
+  );
+}
+
+
+function getDisplayFontPriority(
+  codePoint
+) {
+
+  /*
+    js/fonts.js の getWebFontNames() と
+    同じ優先順位にする。
+
+    ここで先頭に来るフォントが、
+    Unicode → 文字 で最初に試される
+    フォントと一致する。
+  */
+
+  if (
+    inCodePointRange(
+      codePoint,
+      0x13460,
+      0x143FF
+    )
+  ) {
+
+    return [
+      "UniHieroglyphica",
+      "Egyptology Extended",
+      "Noto Sans Egyptian Hieroglyphs"
+    ];
+  }
+
+
+  if (
+    inCodePointRange(
+      codePoint,
+      0x187F8,
+      0x187FF
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x18D09,
+      0x18D1E
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x18D80,
+      0x18DFF
+    )
+  ) {
+
+    return [
+      "Tangut Extended",
+      "Noto Serif Tangut"
+    ];
+  }
+
+
+  if (
+    inCodePointRange(
+      codePoint,
+      0x1CC00,
+      0x1CEBF
+    )
+  ) {
+
+    return [
+      "BabelStone Pseudographica",
+      "Noto Sans Symbols 2 Local",
+      "Noto Sans Symbols 2"
+    ];
+  }
+
+
+  if (
+    inCodePointRange(
+      codePoint,
+      0x101D0,
+      0x101FF
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x10E60,
+      0x10E7F
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x1D2C0,
+      0x1D2DF
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x1F500,
+      0x1F5FF
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x1F650,
+      0x1F67F
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x1F780,
+      0x1F7FF
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x1F800,
+      0x1F8FF
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x1FB00,
+      0x1FBFF
+    )
+  ) {
+
+    return [
+      "Noto Sans Symbols 2 Local",
+      "Noto Sans Symbols 2"
+    ];
+  }
+
+
+  if (
+    inCodePointRange(
+      codePoint,
+      0xF900,
+      0xFAFF
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x20000,
+      0x2EE5F
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x2F800,
+      0x2FA1F
+    )
+    ||
+    inCodePointRange(
+      codePoint,
+      0x30000,
+      0x3347F
+    )
+  ) {
+
+    return [
+      "Plangothic P1",
+      "Plangothic P2",
+      "BabelStone Han"
+    ];
+  }
+
+
+  return [];
+}
+
+
+function getLocalFontRecordByDisplayName(
+  fonts,
+  displayName
+) {
+
+  const aliases = {
+    "Noto Sans Symbols 2 Local":
+      "Noto Sans Symbols 2"
+  };
+
+
+  const recordName =
+    aliases[
+      displayName
+    ]
+    ||
+    displayName;
+
+
+  return fonts.find(
+    (
+      item
+    ) =>
+      item.name ===
+        recordName
+  )
+  ||
+  null;
+}
+
+
+function resolveDisplaySvg(
+  fonts,
+  codePoint
+) {
+
+  const priority =
+    getDisplayFontPriority(
+      codePoint
+    );
+
+
+  if (
+    priority.length ===
+      0
+  ) {
+
+    return null;
+  }
+
+
+  /*
+    Unicode → 文字 側で最初に指定されている
+    フォントがローカルに無い場合は、
+    別フォントでSVGを作ると字体が一致しない。
+
+    そのため、その候補自体を日次文字には採用しない。
+  */
+
+  const firstRecord =
+    getLocalFontRecordByDisplayName(
+      fonts,
+      priority[
+        0
+      ]
+    );
+
+
+  if (
+    !firstRecord
+  ) {
+
+    return null;
+  }
+
+
+  for (
+    const displayName
+    of priority
+  ) {
+
+    const fontRecord =
+      getLocalFontRecordByDisplayName(
+        fonts,
+        displayName
+      );
+
+
+    if (
+      !fontRecord
+    ) {
+      continue;
+    }
+
+
+    const svg =
+      makeSvgGlyph(
+        fontRecord,
+        codePoint
+      );
+
+
+    if (
+      svg
+    ) {
+
+      return {
+        fontRecord,
+        svg
+      };
+    }
+  }
+
+
+  return null;
+}
+
+
+/* =========================================
    Generate one entry
 ========================================= */
 
@@ -688,18 +993,32 @@ function generateEntry(
     }
 
 
-    const svg =
-      makeSvgGlyph(
-        fontRecord,
+    /*
+      抽選元のフォントではなく、
+      Unicode → 文字 と同じ優先順位で
+      実際に表示用フォントを選び直す。
+    */
+
+    const resolved =
+      resolveDisplaySvg(
+        fonts,
         codePoint
       );
 
 
     if (
-      !svg
+      !resolved
     ) {
       continue;
     }
+
+
+    const {
+      fontRecord:
+        displayFontRecord,
+      svg
+    } =
+      resolved;
 
 
     const character =
@@ -725,7 +1044,7 @@ function generateEntry(
       character,
 
       font:
-        fontRecord.name,
+        displayFontRecord.name,
 
       svg
     };
