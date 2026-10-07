@@ -21,7 +21,7 @@ jobs:
 
       - name: Copy source exactly
         run: |
-          rsync -a --delete --exclude='.git' /tmp/unicode-converter-source/ ./
+          rsync -a --delete --exclude='.git' --exclude='.github/workflows/' /tmp/unicode-converter-source/ ./
 
       - name: Commit cloned contents
         run: |
