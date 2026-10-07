@@ -38,11 +38,8 @@ const prompt = [
 ].join("\n");
 
 const body = {
-  model: "gemini-3.5-flash",
+  model: "gemini-3.1-flash-lite",
   input: prompt,
-  generation_config: {
-    thinking_level: "low"
-  },
   response_format: {
     type: "text",
     mime_type: "application/json",
@@ -114,7 +111,7 @@ async function main() {
   const result = {
     generatedAt: new Date().toISOString(),
     testOnly: true,
-    model: "gemini-3.5-flash",
+    model: "gemini-3.1-flash-lite",
     character: research.character,
     codePoint: research.codePoint,
     unicodeName: research.metadata.unicodeName,
