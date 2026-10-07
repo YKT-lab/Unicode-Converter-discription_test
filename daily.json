@@ -1,55 +1,56 @@
 {
   "current": {
     "date": "2026-10-08",
-    "codePoint": "14086",
-    "character": "𔂆",
+    "codePoint": "13D65",
+    "character": "𓵥",
     "font": "Egyptology Extended",
     "svg": {
-      "path": "M61 345Q61 345 60 345ZM69 345Q68 345 67 345ZM70 345Q70 345 70 345Q70 345 70 345ZM59 345Q58 345 58 345Q58 345 59 345ZM64 342L64 336L65 336L65 342ZM68 363Q67 363 65 363L65 358ZM63 358L63 363Q62 363 60 363ZM70 343Q71 343 71 343.5Q71 344 71 344.5Q71 345 71 345.5Q71 346 70 346Q69 346 69 345.5Q69 345 70 345Q71 345 71 344Q71 343 70 343L59 343Q58 343 58 344Q58 345 59 345Q60 345 60 345.5Q60 346 59 346Q58 346 57.5 345.5Q57 345 57 344.5Q57 344 57.5 343.5Q58 343 59 343ZM65 343L65 364L64 364L64 343ZM63 350L63 357L60 363Q58 362 55 362ZM74 362Q71 363 69 363L65 357L65 350ZM77 350Q75 353 75 356Q75 358 78 362L75 362L66 349Q71 349 77 350ZM63 349L54 362L53 362Q51 358 51 356Q51 353 53 350Q58 349 63 349ZM65 343L70 343Q71 343 71 343.5Q71 344 70 344Q69 344 69 344L67 344Q67 345 67.5 345Q68 345 69 345Q69 346 70 346Q71 346 71.5 345.5Q72 345 72 344Q72 343 71.5 342.5Q71 342 70 342L65 342L65 335L63 335L63 342L59 342Q58 342 57.5 342.5Q57 343 57 344Q57 345 57.5 345.5Q58 346 59 346Q60 346 60 345Q61 345 61.5 345Q62 345 62 344L60 344Q60 344 59.5 344Q59 344 58 344Q58 343 59 343L63 343L63 348Q60 348 52 349Q50 353 50 356Q50 358 52 363Q58 364 63 364L63 365L65 365L65 364Q71 364 79 363Q76 358 76 356Q76 353 79 349Q70 348 65 348Z",
-      "viewBox": "47.6 -367.4 33.8 34.8"
+      "path": "M54 349Q54 350 56 350Q57 351 58 350Q58 349 60 348Q62 347 64.5 347Q67 347 68.5 347.5Q70 348 72.5 347.5Q75 347 76.5 347Q78 347 79 348Q77 348 76 348Q75 348 73 348.5Q71 349 69 349Q67 349 65 348Q62 348 59.5 349.5Q57 351 56.5 351.5Q56 352 55.5 352Q55 352 55 351Q55 352 56 351Q56 350 55 350L54 351Q53 351 53 350Q53 350 54 350Q53 350 52 350Q52 350 52.5 349.5Q53 349 53 350Q53 349 53 349Q55 349 56 348.5Q57 348 57.5 348.5Q58 349 57 350Q56 349 54 349ZM53 349Q53 348 52.5 348Q52 348 52 349L51 350Q51 350 55 352Q53 351 52.5 351.5Q52 352 51 352Q50 352 50 353Q50 354 50 354Q51 353 51.5 353Q52 353 53 352.5Q54 352 55 352.5Q56 353 57 352Q57 353 58 352.5Q59 352 59.5 352.5Q60 353 61 352.5Q62 352 62 354Q63 354 63 353Q63 352 61 351Q60 352 59.5 351.5Q59 351 58.5 351Q58 351 58 351Q58 351 60.5 349.5Q63 348 66 349Q71 350 73.5 349Q76 348 79 348Q80 348 81 347Q81 347 78 347Q76 347 73 347Q70 347 67 346Q62 346 59 347Q58 348 57 348Q56 348 55 348.5Q54 349 53 349ZM55 349Q56 349 57 350Q57 350 57 350Q57 350 56 350Q55 350 55 349ZM55 351Q56 351 56 351Z",
+      "viewBox": "47.52 -356.48 35.96 12.96"
     },
     "info": {
-      "unicodeName": "EGYPTIAN HIEROGLYPH-14086",
+      "unicodeName": "EGYPTIAN HIEROGLYPH-13D65",
       "block": "Egyptian Hieroglyphs Extended-A",
       "script": "Egyptian_Hieroglyphs",
       "age": "16.0",
       "generalCategory": "Lo",
-      "summary": "𔂆は、マストと横梁、帆の索具を備えた長方形の帆の形をしたエジプト聖刻文字です。Unicode 16.0で追加されたEgyptian Hieroglyphs Extended-Aブロックに収録されています。",
-      "usage": "風、息、空気を意味するロゴグラム（表語文字）として機能します。",
+      "summary": "𓵥は、横向きの角を持つ雄羊の頭をした蛇の姿をしています。",
+      "usage": "神性を表す表語文字として用いられます。",
+      "supplementalInfo": "エジプトヒエログリフのカタログ番号I027、分類番号I-08-001に該当します。",
       "facts": [
         {
           "kind": "appearance",
-          "text": "A rectangular sail, with the mast over the sail, with a crossbeam over the sail, with rigging coming from the top of the sail to the mast.",
+          "text": "A snake with the head of a ram with horizontal horns.",
           "source": "Unicode Unikemet",
           "strength": "strong"
         },
         {
           "kind": "function",
-          "text": "Logogram (wind, breath, air)",
+          "text": "Logogram (divinity)",
           "source": "Unicode Unikemet",
           "strength": "strong"
         },
         {
           "kind": "functionValue",
-          "text": "ṯꜣw",
+          "text": "wr-ḥkꜣ.w",
           "source": "Unicode Unikemet",
           "strength": "strong"
         },
         {
           "kind": "namesList:comment",
-          "text": "logogram (wind, breath, air) : ṯꜣw",
+          "text": "logogram (divinity) : wr-ḥkꜣ.w",
           "source": "Unicode NamesList",
           "strength": "strong"
         },
         {
           "kind": "catalogIndex",
-          "text": "P005H",
+          "text": "I027",
           "source": "Unicode Unikemet",
           "strength": "supporting"
         },
         {
           "kind": "taxonomyIndex",
-          "text": "P-06-035",
+          "text": "I-08-001",
           "source": "Unicode Unikemet",
           "strength": "supporting"
         }
@@ -67,61 +68,61 @@
           "name": "Unicode Unikemet",
           "url": "https://www.unicode.org/Public/UCD/latest/ucd/Unikemet.txt"
         }
-      ],
-      "supplementalInfo": ""
+      ]
     }
   },
   "next": {
     "date": "2026-10-09",
-    "codePoint": "13A65",
-    "character": "𓩥",
+    "codePoint": "139F1",
+    "character": "𓧱",
     "font": "Egyptology Extended",
     "svg": {
-      "path": "M58 357Q59 357 59.5 357.5Q60 358 60 359Q59 359 59 358Q59 357 58 357ZM65 336L64 335Q65 335 65 336ZM74 335Q76 335 76 336L75 336Q75 335 74 335ZM55 335L56 335Q57 335 57 336L56 336Q56 336 55 335ZM69 336L69 335Q70 335 70 335ZM71 345Q71 342 72 340.5Q73 339 72.5 341Q72 343 72 345ZM56 355Q55 356 55 356L54 356Q54 356 55 356Q56 356 56 355ZM52 355Q53 355 53 355L52 354L52 355Q52 355 52 354L52 354L53 354Q53 354 52 354L52 353L53 354L55 354Q55 354 56 355L56 354Q56 354 55 353Q56 352 57 349Q58 350 58 350Q59 350 60 351Q60 351 59 352Q58 355 57.5 356Q57 357 56.5 357Q56 357 55 356.5Q54 356 54 356Q53 356 52 355ZM54 349Q55 349 56 351Q55 352 55 353Q54 353 53.5 353Q53 353 52 353Q52 353 51.5 353.5Q51 354 51 354Q51 354 51 354.5Q51 355 52 355L54 356Q54 357 54 357Q54 361 56 362.5Q58 364 58 365Q58 365 58 365Q59 364 57 362Q55 360 55 357L56 357Q55 361 57.5 362.5Q60 364 60 365Q60 365 60 365Q60 364 58 362Q56 360 57 357Q58 358 58.5 358.5Q59 359 61 359Q60 357 59.5 357Q59 357 58 356Q59 355 59 353Q61 353 61.5 352.5Q62 352 61 352Q61 351 61 351Q62 350 66 350Q70 351 73 351Q75 351 76 350Q77 350 79 352Q79 351 78.5 350.5Q78 350 76 350Q77 348 77 347Q77 346 76 345Q75 344 75 343Q75 342 76 342Q77 342 77 341.5Q77 341 77 339Q77 337 77 336Q77 335 76 335L74 335Q74 336 75 336Q76 337 76 339Q76 341 75 341Q74 341 73 342Q73 341 74 339Q73 339 72 337.5Q71 336 71 335.5Q71 335 71 335L68 335Q69 336 70 337Q71 338 72 340Q70 342 71 345Q70 345 68 344.5Q66 344 63 344Q64 342 64 341.5Q64 341 64 341Q64 341 65 339Q66 337 66 336Q66 335 65 335L63 335Q64 336 65 337Q64 338 63.5 339Q63 340 63 341Q63 342 61 344L60 345Q59 343 59 342.5Q59 342 59 341.5Q59 341 58.5 339Q58 337 58 336Q58 335 57 336Q57 335 57 335L55 335Q56 336 56 336Q57 337 57.5 339Q58 341 58 341.5Q58 342 58 342.5Q58 343 58 346Q58 346 57 348Q57 348 56 348Q55 348 54 348Q54 346 53 344L52 345L53 348Q52 347 50 347L50 348Q52 348 54 349ZM55 349Q56 349 56 349Q57 349 57 349Q56 350 56 350Q56 350 55 349ZM60 352Q61 352 61 352Q61 353 60 353ZM61 350Q60 350 59 349Q58 349 58 349Q59 347 61 345Q59 348 59 349L60 349Q59 348 61 346Q61 346 62 345L63 344Q63 344 63 346L63 345Q66 344 68 344.5Q70 345 72 346L73 346Q73 344 73.5 343Q74 342 75 342Q75 342 75 343Q75 344 75.5 345Q76 346 76.5 347Q77 348 75.5 349Q74 350 72 350Q70 350 65 350Q62 349 61 350Z",
-      "viewBox": "47.6 -367.4 33.8 34.8"
+      "path": "M53 362Q54 362 55 361Q56 360 56 358Q56 356 56 353Q56 350 56 350Q57 350 58 349Q60 348 60.5 348Q61 348 72 347Q74 356 78 358Q78 359 79 359L79 359Q79 358 80 358Q80 357 79 353Q78 352 77 349.5Q76 347 75 346Q75 346 75 345Q75 344 75 344Q74 343 68 341Q65 340 60 339Q59 339 58 339Q58 338 58 338Q57 338 57 338L57 338Q55 338 54 340Q54 340 54 342Q52 342 53 343L54 343Q54 343 55 343Q56 343 56 343L56 345L55 345Q54 345 53.5 346Q53 347 53 348Q53 348 52.5 348.5Q52 349 52 350L54 350Q54 350 52.5 352.5Q51 355 51 356Q50 358 50 360Q50 362 52 362Q53 362 53 362ZM60 346Q66 344 67 344Q67 344 64.5 343Q62 342 60 342Q60 342 59 342.5Q58 343 57 343L57 345Q57 345 58 345.5Q59 346 60 346ZM56 349Q57 348 55 346Q55 346 55 347Q54 347 54 349ZM78 357L78 357Q78 357 77 356Q74 351 73 347Q73 346 73.5 346Q74 346 75 347Q77 351 78 356Q79 357 78 357ZM53 361Q53 361 52 361Q51 361 51 360Q51 359 52 357Q52 355 55 351Q55 356 55 357Q55 359 54 360Q54 361 53 361Z",
+      "viewBox": "47.6 -364.4 34.8 28.8"
     },
     "info": {
-      "unicodeName": "EGYPTIAN HIEROGLYPH-13A65",
+      "unicodeName": "EGYPTIAN HIEROGLYPH-139F1",
       "block": "Egyptian Hieroglyphs Extended-A",
       "script": "Egyptian_Hieroglyphs",
       "age": "16.0",
       "generalCategory": "Lo",
-      "summary": "𓩥は、エジプト聖刻文字拡張Aブロックに収録されたUnicode文字です。首に紐（V7）を巻いた状態で直立するガゼルが描かれています。",
-      "usage": "高貴、尊厳、または地位を示す分類子として機能します。",
+      "summary": "𓧱は、肘を曲げて交差させた両腕で杖や筆のようなものを保持する姿を象ったエジプト聖刻文字です。",
+      "usage": "神聖にするという意味を表すロゴグラムとして用いられます。",
+      "supplementalInfo": "カタログ番号D250、分類番号D-27-003が割り当てられています。",
       "facts": [
         {
           "kind": "appearance",
-          "text": "A gazelle, standing, with two horns visible, with a loop of cord with the ends downwards (V7) around its neck.",
+          "text": "Two arms, elbows bent, upper arms overlapping, forearms separated, lower forearm nearly horizontal, holding a wand or brush, resembling a loop.",
           "source": "Unicode Unikemet",
           "strength": "strong"
         },
         {
           "kind": "function",
-          "text": "Classifier noble/dignity/rank",
+          "text": "Logogram (to make holy)",
           "source": "Unicode Unikemet",
           "strength": "strong"
         },
         {
           "kind": "functionValue",
-          "text": "sꜥḥ",
+          "text": "ḏsr",
           "source": "Unicode Unikemet",
           "strength": "strong"
         },
         {
           "kind": "namesList:comment",
-          "text": "classifier noble/dignity/rank : sꜥḥ",
+          "text": "logogram (to make holy) : ḏsr",
           "source": "Unicode NamesList",
           "strength": "strong"
         },
         {
           "kind": "catalogIndex",
-          "text": "E076A",
+          "text": "D250",
           "source": "Unicode Unikemet",
           "strength": "supporting"
         },
         {
           "kind": "taxonomyIndex",
-          "text": "E-03-029",
+          "text": "D-27-003",
           "source": "Unicode Unikemet",
           "strength": "supporting"
         }
@@ -139,8 +140,7 @@
           "name": "Unicode Unikemet",
           "url": "https://www.unicode.org/Public/UCD/latest/ucd/Unikemet.txt"
         }
-      ],
-      "supplementalInfo": ""
+      ]
     }
   }
 }
