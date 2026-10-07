@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-10-07T16:16:33.988Z",
+  "testOnly": true,
+  "model": "gemini-3.1-flash-lite",
+  "character": "𓀔",
+  "codePoint": "U+13014",
+  "unicodeName": "EGYPTIAN HIEROGLYPH A017",
+  "description": {
+    "summary": "エジプトヒエログリフの一つで、座った子供の姿をかたどった文字です。右手を口に当て、左腕を体の横に垂らした姿勢で描かれています。",
+    "usage": "子供や若者を表す分類記号として使用されます。",
+    "trivia": "カタログ番号はA017です。"
+  },
+  "sourceFacts": [
+    {
+      "kind": "appearance",
+      "text": "A child, seated on nothing, forelegs separated, right arm raised with hand to mouth, left arm hanging beside the body.",
+      "source": "Unicode Unikemet",
+      "strength": "strong"
+    },
+    {
+      "kind": "function",
+      "text": "Classifier youth/child",
+      "source": "Unicode Unikemet",
+      "strength": "strong"
+    },
+    {
+      "kind": "namesList:comment",
+      "text": "classifier youth/child",
+      "source": "Unicode NamesList",
+      "strength": "strong"
+    },
+    {
+      "kind": "catalogIndex",
+      "text": "A017",
+      "source": "Unicode Unikemet",
+      "strength": "supporting"
+    },
+    {
+      "kind": "taxonomyIndex",
+      "text": "A-23-002",
+      "source": "Unicode Unikemet",
+      "strength": "supporting"
+    },
+    {
+      "kind": "coreStatus",
+      "text": "C",
+      "source": "Unicode Unikemet",
+      "strength": "supporting"
+    }
+  ]
+}
