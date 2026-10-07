@@ -38,6 +38,8 @@ jobs:
 
       # フォントを調べて、表示可能な文字＋SVG輪郭を生成
       - name: Generate daily characters
+        env:
+          FORCE_REGENERATE_CURRENT: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
         run: node scripts/generate-daily.js
 
       - name: Commit daily.json
