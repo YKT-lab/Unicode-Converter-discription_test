@@ -1,5 +1,8 @@
 const fs = require("fs");
 
+const AdmZip =
+  require("adm-zip");
+
 const {
   DAILY_JSON_PATH,
   getJSTDateString,
@@ -21,6 +24,11 @@ if (!API_KEY) {
 
 const UCD_BASE =
   "https://www.unicode.org/Public/UCD/latest/ucd";
+
+
+const UNIHAN_URL =
+  UCD_BASE +
+  "/Unihan.zip";
 
 
 const SOURCES = {
@@ -107,6 +115,230 @@ async function fetchText(
 }
 
 
+async function fetchBuffer(
+  url
+) {
+
+  const response =
+    await fetch(
+      url,
+      {
+        headers: {
+          "User-Agent":
+            "Unicode-Converter description test"
+        },
+
+        signal:
+          AbortSignal.timeout(
+            30000
+          )
+      }
+    );
+
+
+  if (
+    !response.ok
+  ) {
+
+    throw new Error(
+      response.status +
+      " " +
+      response.statusText +
+      ": " +
+      url
+    );
+  }
+
+
+  return Buffer.from(
+    await response.arrayBuffer()
+  );
+}
+
+
+function readZipText(
+  zip,
+  fileName
+) {
+
+  const entry =
+    zip
+      .getEntries()
+      .find(
+        (
+          item
+        ) =>
+          item.entryName ===
+            fileName
+          ||
+          item.entryName.endsWith(
+            "/" +
+            fileName
+          )
+      );
+
+
+  if (
+    !entry
+  ) {
+
+    throw new Error(
+      "Unihan file not found in zip: " +
+      fileName
+    );
+  }
+
+
+  return entry
+    .getData()
+    .toString(
+      "utf8"
+    );
+}
+
+
+function parseUnihanProperties(
+  text
+) {
+
+  const lookup =
+    new Map();
+
+
+  for (
+    const line
+    of text.split(
+      /\r?\n/
+    )
+  ) {
+
+    if (
+      !line
+      ||
+      line.startsWith(
+        "#"
+      )
+    ) {
+      continue;
+    }
+
+
+    const fields =
+      line.split(
+        "\t"
+      );
+
+
+    if (
+      fields.length <
+        3
+      ||
+      !/^U\+[0-9A-F]+$/i.test(
+        fields[
+          0
+        ]
+      )
+    ) {
+      continue;
+    }
+
+
+    const codePoint =
+      parseInt(
+        fields[
+          0
+        ].slice(
+          2
+        ),
+        16
+      );
+
+
+    const property =
+      fields[
+        1
+      ].trim();
+
+
+    const value =
+      fields
+        .slice(
+          2
+        )
+        .join(
+          "\t"
+        )
+        .trim();
+
+
+    if (
+      !property
+      ||
+      !value
+    ) {
+      continue;
+    }
+
+
+    let properties =
+      lookup.get(
+        codePoint
+      );
+
+
+    if (
+      !properties
+    ) {
+
+      properties =
+        {};
+
+
+      lookup.set(
+        codePoint,
+        properties
+      );
+    }
+
+
+    properties[
+      property
+    ] =
+      value;
+  }
+
+
+  return lookup;
+}
+
+
+async function loadUnihanData() {
+
+  const buffer =
+    await fetchBuffer(
+      UNIHAN_URL
+    );
+
+
+  const zip =
+    new AdmZip(
+      buffer
+    );
+
+
+  const readings =
+    readZipText(
+      zip,
+      "Unihan_Readings.txt"
+    );
+
+
+  return parseUnihanProperties(
+    readings
+  );
+}
+
+
 async function loadResearchSources() {
 
   const entries =
@@ -115,39 +347,51 @@ async function loadResearchSources() {
     );
 
 
-  const texts =
+  const [
+    texts,
+    unihan
+  ] =
     await Promise.all(
-      entries.map(
-        (
-          [
-            ,
-            url
-          ]
-        ) =>
-          fetchText(
-            url
+      [
+        Promise.all(
+          entries.map(
+            (
+              [
+                ,
+                url
+              ]
+            ) =>
+              fetchText(
+                url
+              )
           )
-      )
+        ),
+
+        loadUnihanData()
+      ]
     );
 
 
-  return Object.fromEntries(
-    entries.map(
-      (
-        [
-          key
-        ],
-        index
-      ) => [
-        key,
-        texts[
+  return {
+    ...Object.fromEntries(
+      entries.map(
+        (
+          [
+            key
+          ],
           index
+        ) => [
+          key,
+          texts[
+            index
+          ]
         ]
-      ]
-    )
-  );
-}
+      )
+    ),
 
+    unihan
+  };
+}
 
 function parseRange(
   raw
@@ -562,7 +806,8 @@ function normalizeFactText(
 
 function makeFacts(
   namesList,
-  unikemet
+  unikemet,
+  unihan
 ) {
 
   const facts =
@@ -666,7 +911,10 @@ function makeFacts(
       [
         "alias",
         "formalAlias",
-        "notice"
+        "notice",
+        "crossReference",
+        "decomposition",
+        "variation"
       ].includes(
         item.type
       )
@@ -681,6 +929,30 @@ function makeFacts(
       );
     }
   }
+
+
+  push(
+    "unihan:definition",
+    unihan.kDefinition,
+    "Unicode Unihan",
+    "strong"
+  );
+
+
+  push(
+    "unihan:japaneseOn",
+    unihan.kJapaneseOn,
+    "Unicode Unihan",
+    "strong"
+  );
+
+
+  push(
+    "unihan:japaneseKun",
+    unihan.kJapaneseKun,
+    "Unicode Unihan",
+    "strong"
+  );
 
 
   push(
@@ -764,10 +1036,19 @@ function researchCharacter(
     );
 
 
+  const unihan =
+    sourceTexts.unihan.get(
+      codePoint
+    )
+    ||
+    {};
+
+
   const facts =
     makeFacts(
       namesList,
-      unikemet
+      unikemet,
+      unihan
     );
 
 
@@ -781,21 +1062,195 @@ function researchCharacter(
     );
 
 
-  const accepted =
+  const isHan =
+    script ===
+      "Han";
+
+
+  const isEgyptian =
+    script ===
+      "Egyptian_Hieroglyphs";
+
+
+  const isSymbolLike =
+    typeof generalCategory ===
+      "string"
+    &&
+    /^[SP]/.test(
+      generalCategory
+    );
+
+
+  const unihanFacts =
+    facts.filter(
+      (
+        item
+      ) =>
+        item.kind.startsWith(
+          "unihan:"
+        )
+    );
+
+
+  const namesListFacts =
+    facts.filter(
+      (
+        item
+      ) =>
+        item.kind.startsWith(
+          "namesList:"
+        )
+    );
+
+
+  const hasIdentity =
     Boolean(
       unicodeName
       &&
       block
       &&
       script
-    )
+    );
+
+
+  let accepted =
+    false;
+
+
+  let researchType =
+    "general";
+
+
+  if (
+    hasIdentity
     &&
-    strongFacts.length >=
-      2;
+    isHan
+  ) {
+
+    researchType =
+      "han";
+
+
+    /*
+      漢字はUnihanに意味または日本語読みが
+      1つでもあれば説明可能とみなす。
+    */
+
+    accepted =
+      unihanFacts.length >
+        0;
+
+  } else if (
+    hasIdentity
+    &&
+    isEgyptian
+  ) {
+
+    researchType =
+      "egyptian";
+
+
+    accepted =
+      strongFacts.length >=
+        2;
+
+  } else if (
+    hasIdentity
+    &&
+    isSymbolLike
+  ) {
+
+    researchType =
+      "symbol";
+
+
+    /*
+      記号は正式Unicode名そのものが
+      形・種類を説明していることが多い。
+      NamesList注釈があればさらに利用する。
+    */
+
+    accepted =
+      Boolean(
+        unicodeName
+      );
+
+  } else if (
+    hasIdentity
+  ) {
+
+    /*
+      その他の文字体系は従来どおり、
+      文字固有の強い情報を要求する。
+    */
+
+    accepted =
+      strongFacts.length >=
+        2;
+  }
+
+
+  const sources = [
+    {
+      name:
+        "Unicode DerivedName",
+
+      url:
+        SOURCES.derivedName
+    },
+
+    {
+      name:
+        "Unicode NamesList",
+
+      url:
+        SOURCES.namesList
+    }
+  ];
+
+
+  if (
+    Object.keys(
+      unikemet
+    ).length >
+      0
+  ) {
+
+    sources.push(
+      {
+        name:
+          "Unicode Unikemet",
+
+        url:
+          SOURCES.unikemet
+      }
+    );
+  }
+
+
+  if (
+    Object.keys(
+      unihan
+    ).length >
+      0
+  ) {
+
+    sources.push(
+      {
+        name:
+          "Unicode Unihan",
+
+        url:
+          UNIHAN_URL
+      }
+    );
+  }
 
 
   return {
     accepted,
+
+    researchType,
 
     metadata: {
       unicodeName,
@@ -807,34 +1262,20 @@ function researchCharacter(
 
     facts,
 
-    sources: [
-      {
-        name:
-          "Unicode DerivedName",
+    sources,
 
-        url:
-          SOURCES.derivedName
-      },
+    diagnostics: {
+      strongFactCount:
+        strongFacts.length,
 
-      {
-        name:
-          "Unicode NamesList",
+      unihanFactCount:
+        unihanFacts.length,
 
-        url:
-          SOURCES.namesList
-      },
-
-      {
-        name:
-          "Unicode Unikemet",
-
-        url:
-          SOURCES.unikemet
-      }
-    ]
+      namesListFactCount:
+        namesListFacts.length
+    }
   };
 }
-
 
 function sleep(
   milliseconds
@@ -862,9 +1303,12 @@ async function generateDescription(
     "以下のUnicode公式資料から確認済みの事実だけを使って、日本語の短い解説を書いてください。",
     "資料にない事実を補わないでください。推測は禁止です。",
     "同じ事実を言い換えて水増ししないでください。",
-    "summaryは1〜2文、usageは1〜2文、supplementalInfoは必要な場合だけ1文程度にしてください。",
+    "summaryは1〜2文、usageは0〜1文、supplementalInfoは必要な場合だけ1文程度にしてください。"
     "summaryは対象文字・U+XXXX・Unicode名・「この文字は」などを主語にせず、見た目や意味の説明から直接始めてください。たとえば「横向きの角を持つ雄羊の頭をした蛇を表します。」のように書いてください。",
-    "usageには転写や読みを混ぜず、意味や機能だけを書いてください。転写はfactsのfunctionValueから別欄に表示します。",
+    "usageには根拠のある用途・機能が確認できる場合だけ書き、資料に用途がなければ空文字列にしてください。",
+    "UnihanのkDefinitionは漢字の意味、kJapaneseOnは日本語の音読み、kJapaneseKunは日本語の訓読みです。漢字ではこれらをsummaryに自然にまとめてください。",
+    "記号ではUnicodeの正式名称を、その記号の形や種類を説明する根拠として使えます。ただし正式名称から実際の用途を推測しないでください。",
+    "エジプト文字の転写はfactsのfunctionValueから別欄に表示するため、usageには混ぜないでください。"
     "supplementalInfoは本文を理解する助けになる追加情報だけにしてください。",
     "カタログ番号・分類番号・Unicode名・コードポイント・ブロック名・Unicode追加バージョンだけしか材料がない場合、supplementalInfoは必ず空文字列にしてください。",
     "",
@@ -872,6 +1316,9 @@ async function generateDescription(
     entry.character +
       " U+" +
       entry.codePoint,
+    "",
+    "調査タイプ:",
+    research.researchType,
     "",
     "基本情報:",
     JSON.stringify(
@@ -1134,6 +1581,16 @@ async function generateAcceptedEntry(
           ? "accepted"
           : "rejected"
       )
+      +
+      " [" +
+      research.researchType +
+      "; strong=" +
+      research.diagnostics.strongFactCount +
+      "; unihan=" +
+      research.diagnostics.unihanFactCount +
+      "; namesList=" +
+      research.diagnostics.namesListFactCount +
+      "]"
     );
 
 
@@ -1151,19 +1608,25 @@ async function generateAcceptedEntry(
       );
 
 
+    const supplementalKinds =
+      new Set(
+        [
+          "namesList:alias",
+          "namesList:formalAlias",
+          "namesList:notice",
+          "namesList:crossReference",
+          "namesList:decomposition",
+          "namesList:variation"
+        ]
+      );
+
+
     const hasSupplementalFacts =
       research.facts.some(
         (
           fact
         ) =>
-          ![
-            "appearance",
-            "function",
-            "functionValue",
-            "namesList:comment",
-            "catalogIndex",
-            "taxonomyIndex"
-          ].includes(
+          supplementalKinds.has(
             fact.kind
           )
       );
