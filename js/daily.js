@@ -127,127 +127,279 @@ function renderDailySvg(
   character
 ) {
 
-  const SVG_NS =
-    "http://www.w3.org/2000/svg";
+  const viewBox =
+    svgData.viewBox
+      .trim()
+      .split(
+        /\s+/
+      )
+      .map(
+        Number
+      );
 
 
-  const svg =
-    document.createElementNS(
-      SVG_NS,
-      "svg"
+  const [
+    viewBoxX,
+    viewBoxY,
+    viewBoxWidth,
+    viewBoxHeight
+  ] =
+    viewBox;
+
+
+  const canvas =
+    document.createElement(
+      "canvas"
     );
 
 
-  svg.classList.add(
-    "daily-character-svg"
-  );
+  canvas.className =
+    "daily-character-canvas";
 
 
-  svg.setAttribute(
-    "viewBox",
-    svgData.viewBox
-  );
-
-
-  svg.setAttribute(
-    "preserveAspectRatio",
-    "xMidYMid meet"
-  );
-
-
-  svg.setAttribute(
+  canvas.setAttribute(
     "role",
     "img"
   );
 
 
-  svg.setAttribute(
+  canvas.setAttribute(
     "aria-label",
     character
   );
 
 
-  svg.setAttribute(
-    "focusable",
-    "false"
+  dailyCharacter.appendChild(
+    canvas
   );
 
 
-  /*
-    CSSを追加していなくても
-    このJSだけで適切な大きさになる
-  */
+  const draw = () => {
 
-  svg.style.display =
-    "block";
+    const rect =
+      canvas.getBoundingClientRect();
 
 
-  svg.style.width =
-    "110px";
+    const cssWidth =
+      Math.max(
+        rect.width,
+        1
+      );
 
 
-  svg.style.height =
-    "110px";
+    const cssHeight =
+      Math.max(
+        rect.height,
+        1
+      );
 
 
-  svg.style.maxWidth =
-    "100%";
+    const deviceScale =
+      Math.max(
+        window.devicePixelRatio
+        ||
+        1,
+        1
+      );
 
 
-  svg.style.overflow =
-    "visible";
+    /*
+      4倍スーパーサンプリング。
+      CSS上は小さく見せつつ、
+      内部では高解像度で描いてから
+      ブラウザに縮小させる。
+    */
+
+    const supersample =
+      4;
 
 
-  svg.style.pointerEvents =
-    "none";
+    const pixelWidth =
+      Math.ceil(
+        cssWidth
+        *
+        deviceScale
+        *
+        supersample
+      );
 
 
-  svg.style.shapeRendering =
-    "geometricPrecision";
+    const pixelHeight =
+      Math.ceil(
+        cssHeight
+        *
+        deviceScale
+        *
+        supersample
+      );
 
 
-  const path =
-    document.createElementNS(
-      SVG_NS,
-      "path"
+    if (
+      canvas.width !==
+        pixelWidth
+      ||
+      canvas.height !==
+        pixelHeight
+    ) {
+
+      canvas.width =
+        pixelWidth;
+
+
+      canvas.height =
+        pixelHeight;
+    }
+
+
+    const context =
+      canvas.getContext(
+        "2d",
+        {
+          alpha:
+            true
+        }
+      );
+
+
+    if (
+      !context
+    ) {
+      return;
+    }
+
+
+    context.clearRect(
+      0,
+      0,
+      pixelWidth,
+      pixelHeight
     );
 
 
-  path.setAttribute(
-    "d",
-    svgData.path
+    context.imageSmoothingEnabled =
+      true;
+
+
+    context.imageSmoothingQuality =
+      "high";
+
+
+    let path;
+
+
+    try {
+
+      path =
+        new Path2D(
+          svgData.path
+        );
+
+    } catch (
+      error
+    ) {
+
+      console.warn(
+        "Daily Path2D rendering failed:",
+        error
+      );
+
+
+      return;
+    }
+
+
+    const scale =
+      Math.min(
+        pixelWidth /
+          viewBoxWidth,
+        pixelHeight /
+          viewBoxHeight
+      );
+
+
+    const offsetX =
+      (
+        pixelWidth
+        -
+        viewBoxWidth *
+        scale
+      )
+      /
+      2;
+
+
+    const offsetY =
+      (
+        pixelHeight
+        -
+        viewBoxHeight *
+        scale
+      )
+      /
+      2;
+
+
+    context.save();
+
+
+    /*
+      fontkitのY軸は上向きなので、
+      ここでSVG表示時と同じように反転する。
+    */
+
+    context.setTransform(
+      scale,
+      0,
+      0,
+      -scale,
+      offsetX
+      -
+      viewBoxX *
+      scale,
+      offsetY
+      -
+      viewBoxY *
+      scale
+    );
+
+
+    context.fillStyle =
+      getComputedStyle(
+        dailyCharacter
+      )
+      .color;
+
+
+    context.fill(
+      path
+    );
+
+
+    context.restore();
+  };
+
+
+  requestAnimationFrame(
+    draw
   );
 
 
-  /*
-    Font座標はYが上向き、
-    SVGはYが下向きなので反転する。
+  if (
+    document.fonts
+    &&
+    document.fonts.ready
+  ) {
 
-    generate-daily.js側のviewBoxも
-    この反転を前提に生成する。
-  */
-
-  path.setAttribute(
-    "transform",
-    "scale(1 -1)"
-  );
-
-
-  path.setAttribute(
-    "fill",
-    "currentColor"
-  );
-
-
-  svg.appendChild(
-    path
-  );
-
-
-  dailyCharacter.appendChild(
-    svg
-  );
+    document.fonts.ready
+      .then(
+        draw
+      )
+      .catch(
+        () => {}
+      );
+  }
 }
+
 
 /* =========================================
    Daily old-font fallback
