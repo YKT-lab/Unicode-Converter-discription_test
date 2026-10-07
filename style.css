@@ -1725,27 +1725,100 @@ button:disabled {
   620px
 ) {
 
+  #dailyCharacterBox {
+    padding:
+      18px 14px;
+  }
+
+
   .daily-layout {
     grid-template-columns:
-      1fr;
+      minmax(112px, 0.72fr)
+      minmax(0, 1.28fr);
 
-    gap: 16px;
+    gap: 12px;
+
+    align-items: start;
   }
 
 
   .daily-character-frame {
-    min-height: 170px;
+    min-height: 145px;
+
+    padding:
+      14px 10px;
+
+    border-radius: 14px;
   }
 
 
   #dailyCharacter {
-    min-height: 125px;
+    min-height: 115px;
+
+    font-size: 72px;
+  }
+
+
+  .daily-character-svg {
+    width: 88px !important;
+
+    height: 88px !important;
+  }
+
+
+  #dailyCode {
+    font-size: 13px;
+  }
+
+
+  #dailyName {
+    font-size: 9px;
+
+    line-height: 1.35;
+  }
+
+
+  #dailyResearchLink {
+    font-size: 11px;
   }
 
 
   #dailyInfo {
     padding:
-      17px;
+      14px 13px;
+
+    border-radius: 14px;
+  }
+
+
+  .daily-info-section + .daily-info-section {
+    margin-top: 15px;
+  }
+
+
+  .daily-info-heading {
+    margin-bottom: 5px;
+
+    font-size: 11px;
+  }
+
+
+  .daily-info-section p {
+    font-size: 13px;
+
+    line-height: 1.65;
+  }
+
+
+  .daily-sources {
+    margin-top: 15px;
+
+    padding-top: 11px;
+  }
+
+
+  .daily-sources summary.unicode-scope-excluded {
+    font-size: 11px;
   }
 
 }
