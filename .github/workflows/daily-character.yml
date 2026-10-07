@@ -36,11 +36,19 @@ jobs:
       - name: Install dependencies
         run: npm install --package-lock=false
 
-      # フォントを調べて、表示可能な文字＋SVG輪郭を生成
-      - name: Generate daily characters
-        env:
-          FORCE_REGENERATE_CURRENT: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
+      # 定時実行は、今まで通りの安定した日次処理
+      - name: Generate scheduled daily characters
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: node scripts/generate-daily.js
+
+      # 手動実行はテストモード。
+      # 今日・明日を再抽選し、Unicode公式資料で審査し、
+      # 合格した文字だけGeminiで日本語解説を生成する。
+      - name: Generate described daily characters
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/generate-described-daily.js
 
       - name: Commit daily.json
         run: |
