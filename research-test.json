@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-10-07T15:59:52.613Z",
+  "testOnly": true,
+  "accepted": true,
+  "reason": "Unicode公式資料から、文字固有の情報を2件以上（うち強い情報1件以上）確認できた。",
+  "character": "𓀔",
+  "codePoint": "U+13014",
+  "metadata": {
+    "unicodeName": "EGYPTIAN HIEROGLYPH A017",
+    "block": "Egyptian Hieroglyphs",
+    "script": "Egyptian_Hieroglyphs",
+    "age": "5.2",
+    "generalCategory": "Lo"
+  },
+  "facts": [
+    {
+      "kind": "appearance",
+      "text": "A child, seated on nothing, forelegs separated, right arm raised with hand to mouth, left arm hanging beside the body.",
+      "source": "Unicode Unikemet",
+      "strength": "strong"
+    },
+    {
+      "kind": "function",
+      "text": "Classifier youth/child",
+      "source": "Unicode Unikemet",
+      "strength": "strong"
+    },
+    {
+      "kind": "namesList:comment",
+      "text": "classifier youth/child",
+      "source": "Unicode NamesList",
+      "strength": "strong"
+    },
+    {
+      "kind": "catalogIndex",
+      "text": "A017",
+      "source": "Unicode Unikemet",
+      "strength": "supporting"
+    },
+    {
+      "kind": "taxonomyIndex",
+      "text": "A-23-002",
+      "source": "Unicode Unikemet",
+      "strength": "supporting"
+    },
+    {
+      "kind": "coreStatus",
+      "text": "C",
+      "source": "Unicode Unikemet",
+      "strength": "supporting"
+    }
+  ],
+  "unicodeData": {
+    "namesList": [
+      {
+        "type": "name",
+        "text": "EGYPTIAN HIEROGLYPH A017"
+      },
+      {
+        "type": "comment",
+        "text": "classifier youth/child"
+      }
+    ],
+    "unikemet": {
+      "kEH_Cat": "A-23-002",
+      "kEH_Core": "C",
+      "kEH_Desc": "A child, seated on nothing, forelegs separated, right arm raised with hand to mouth, left arm hanging beside the body.",
+      "kEH_Func": "Classifier youth/child",
+      "kEH_UniK": "A017",
+      "kEH_JSesh": "A17",
+      "kEH_HG": "A17",
+      "kEH_IFAO": "34,1"
+    }
+  },
+  "sources": [
+    {
+      "name": "derivedName",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/extracted/DerivedName.txt"
+    },
+    {
+      "name": "blocks",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt"
+    },
+    {
+      "name": "scripts",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/Scripts.txt"
+    },
+    {
+      "name": "age",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/DerivedAge.txt"
+    },
+    {
+      "name": "generalCategory",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/extracted/DerivedGeneralCategory.txt"
+    },
+    {
+      "name": "namesList",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/NamesList.txt"
+    },
+    {
+      "name": "unikemet",
+      "url": "https://www.unicode.org/Public/UCD/latest/ucd/Unikemet.txt"
+    }
+  ]
+}
