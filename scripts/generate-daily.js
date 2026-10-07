@@ -768,6 +768,11 @@ function loadExistingDailyData() {
 
 function main() {
 
+  const forceRegenerateCurrent =
+    process.env.FORCE_REGENERATE_CURRENT ===
+      "true";
+
+
   const fonts =
     loadFonts();
 
@@ -792,6 +797,21 @@ function main() {
 
 
   if (
+    forceRegenerateCurrent
+  ) {
+
+    console.log(
+      "Manual test mode: regenerating current character."
+    );
+
+
+    current =
+      generateEntry(
+        fonts,
+        currentDate
+      );
+
+  } else if (
     existing.current
     &&
     existing.current.date ===
