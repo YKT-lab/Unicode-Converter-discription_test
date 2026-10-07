@@ -1822,3 +1822,43 @@ button:disabled {
   }
 
 }
+
+
+/* =========================================
+   Daily inline glyph / transliteration
+========================================= */
+
+.daily-inline-glyph {
+  display: inline-block;
+
+  margin-right: 0.08em;
+
+  font-size: 1.18em;
+
+  line-height: 1;
+
+  vertical-align: -0.06em;
+}
+
+
+.daily-transliteration-section {
+  padding:
+    10px 12px;
+
+  border-radius: 10px;
+
+  background:
+    #f7f7f9;
+}
+
+
+.egyptian-transliteration {
+  font-family:
+    "Egyptology Extended",
+    "Segoe UI Historic",
+    serif;
+
+  font-size: 1.18em !important;
+
+  letter-spacing: 0.02em;
+}

@@ -14,9 +14,8 @@
       "script": "Egyptian_Hieroglyphs",
       "age": "16.0",
       "generalCategory": "Lo",
-      "summary": "U+14086は、マストと横梁、帆の索具を備えた長方形の帆の形をしたエジプト聖刻文字です。Unicode 16.0で追加されたEgyptian Hieroglyphs Extended-Aブロックに収録されています。",
-      "usage": "風、息、空気を意味するロゴグラム（表語文字）として機能し、読みは「ṯꜣw」です。",
-      "trivia": "カタログ番号P005Hや分類番号P-06-035が割り当てられています。",
+      "summary": "𔂆は、マストと横梁、帆の索具を備えた長方形の帆の形をしたエジプト聖刻文字です。Unicode 16.0で追加されたEgyptian Hieroglyphs Extended-Aブロックに収録されています。",
+      "usage": "風、息、空気を意味するロゴグラム（表語文字）として機能します。",
       "facts": [
         {
           "kind": "appearance",
@@ -68,7 +67,8 @@
           "name": "Unicode Unikemet",
           "url": "https://www.unicode.org/Public/UCD/latest/ucd/Unikemet.txt"
         }
-      ]
+      ],
+      "supplementalInfo": ""
     }
   },
   "next": {
@@ -87,8 +87,7 @@
       "age": "16.0",
       "generalCategory": "Lo",
       "summary": "𓩥は、エジプト聖刻文字拡張Aブロックに収録されたUnicode文字です。首に紐（V7）を巻いた状態で直立するガゼルが描かれています。",
-      "usage": "高貴、尊厳、または地位を示す分類子として機能し、読み方は「sꜥḥ」です。",
-      "trivia": "カタログ番号はE076A、タクソノミー番号はE-03-029が割り当てられています。",
+      "usage": "高貴、尊厳、または地位を示す分類子として機能します。",
       "facts": [
         {
           "kind": "appearance",
@@ -140,7 +139,8 @@
           "name": "Unicode Unikemet",
           "url": "https://www.unicode.org/Public/UCD/latest/ucd/Unikemet.txt"
         }
-      ]
+      ],
+      "supplementalInfo": ""
     }
   }
 }

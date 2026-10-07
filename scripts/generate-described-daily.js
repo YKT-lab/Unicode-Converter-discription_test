@@ -862,8 +862,11 @@ async function generateDescription(
     "以下のUnicode公式資料から確認済みの事実だけを使って、日本語の短い解説を書いてください。",
     "資料にない事実を補わないでください。推測は禁止です。",
     "同じ事実を言い換えて水増ししないでください。",
-    "summaryは1〜2文、usageは1〜2文、triviaは1文程度にしてください。",
-    "triviaに適切な内容がなければ空文字列にしてください。",
+    "summaryは1〜2文、usageは1〜2文、supplementalInfoは必要な場合だけ1文程度にしてください。",
+    "summaryで対象文字を主語にする場合は、U+XXXXではなく対象文字そのものを使ってください。",
+    "usageには転写や読みを混ぜず、意味や機能だけを書いてください。転写はfactsのfunctionValueから別欄に表示します。",
+    "supplementalInfoは本文を理解する助けになる追加情報だけにしてください。",
+    "カタログ番号・分類番号・Unicode名・コードポイント・ブロック名・Unicode追加バージョンだけしか材料がない場合、supplementalInfoは必ず空文字列にしてください。",
     "",
     "対象文字:",
     entry.character +
@@ -917,7 +920,7 @@ async function generateDescription(
               "string"
           },
 
-          trivia: {
+          supplementalInfo: {
             type:
               "string"
           }
@@ -926,7 +929,7 @@ async function generateDescription(
         required: [
           "summary",
           "usage",
-          "trivia"
+          "supplementalInfo"
         ]
       }
     }
@@ -1160,8 +1163,8 @@ async function generateAcceptedEntry(
         usage:
           description.usage,
 
-        trivia:
-          description.trivia,
+        supplementalInfo:
+          description.supplementalInfo,
 
         facts:
           research.facts,

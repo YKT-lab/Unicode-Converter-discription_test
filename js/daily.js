@@ -379,6 +379,181 @@ async function renderDailyFontFallback(
    Daily explanation
 ========================================= */
 
+function setDailyInlineGlyphFont(
+  element,
+  entry
+) {
+
+  const families = {
+    "Tangut Extended":
+      "Tangut Extended",
+
+    "Plangothic P1":
+      "Plangothic P1",
+
+    "Plangothic P2":
+      "Plangothic P2",
+
+    "Egyptology Extended":
+      "Egyptology Extended",
+
+    "UniHieroglyphica":
+      "UniHieroglyphica",
+
+    "BabelStone Pseudographica":
+      "BabelStone Pseudographica",
+
+    "Noto Sans Symbols 2":
+      "Noto Sans Symbols 2 Local"
+  };
+
+
+  const family =
+    families[
+      entry.font
+    ];
+
+
+  if (
+    family
+  ) {
+
+    element.style.fontFamily =
+      `"${family}"`;
+
+    return;
+  }
+
+
+  element.classList.add(
+    getFontClass(
+      parseInt(
+        entry.codePoint,
+        16
+      )
+    )
+  );
+}
+
+
+function renderDailySummary(
+  text,
+  entry
+) {
+
+  dailySummary.replaceChildren();
+
+
+  if (
+    typeof text !==
+      "string"
+    ||
+    !text.trim()
+  ) {
+    return;
+  }
+
+
+  const summary =
+    text.trim();
+
+
+  const codeMatch =
+    summary.match(
+      /^U\+[0-9A-F]+/i
+    );
+
+
+  if (
+    !codeMatch
+  ) {
+
+    dailySummary.textContent =
+      summary;
+
+
+    return;
+  }
+
+
+  const glyph =
+    document.createElement(
+      "span"
+    );
+
+
+  glyph.className =
+    "daily-inline-glyph";
+
+
+  glyph.textContent =
+    String.fromCodePoint(
+      parseInt(
+        entry.codePoint,
+        16
+      )
+    );
+
+
+  setDailyInlineGlyphFont(
+    glyph,
+    entry
+  );
+
+
+  dailySummary.appendChild(
+    glyph
+  );
+
+
+  dailySummary.appendChild(
+    document.createTextNode(
+      summary.slice(
+        codeMatch[
+          0
+        ].length
+      )
+    )
+  );
+}
+
+
+function getDailyTransliteration(
+  info
+) {
+
+  if (
+    !Array.isArray(
+      info?.facts
+    )
+  ) {
+    return "";
+  }
+
+
+  const fact =
+    info.facts.find(
+      (
+        item
+      ) =>
+        item
+        &&
+        item.kind ===
+          "functionValue"
+        &&
+        typeof item.text ===
+          "string"
+        &&
+        item.text.trim()
+    );
+
+
+  return fact
+    ? fact.text.trim()
+    : "";
+}
+
+
 function resetDailyInfo() {
 
   dailyName.hidden =
@@ -393,8 +568,7 @@ function resetDailyInfo() {
     true;
 
 
-  dailySummary.textContent =
-    "";
+  dailySummary.replaceChildren();
 
 
   dailyUsageSection.hidden =
@@ -405,11 +579,19 @@ function resetDailyInfo() {
     "";
 
 
-  dailyTriviaSection.hidden =
+  dailyTransliterationSection.hidden =
     true;
 
 
-  dailyTrivia.textContent =
+  dailyTransliteration.textContent =
+    "";
+
+
+  dailySupplementSection.hidden =
+    true;
+
+
+  dailySupplement.textContent =
     "";
 
 
@@ -426,7 +608,8 @@ function resetDailyInfo() {
 
 
 function renderDailyInfo(
-  info
+  info,
+  entry
 ) {
 
   resetDailyInfo();
@@ -468,8 +651,10 @@ function renderDailyInfo(
   }
 
 
-  dailySummary.textContent =
-    info.summary.trim();
+  renderDailySummary(
+    info.summary,
+    entry
+  );
 
 
   dailyInfo.hidden =
@@ -492,18 +677,37 @@ function renderDailyInfo(
   }
 
 
+  const transliteration =
+    getDailyTransliteration(
+      info
+    );
+
+
   if (
-    typeof info.trivia ===
-      "string"
-    &&
-    info.trivia.trim()
+    transliteration
   ) {
 
-    dailyTrivia.textContent =
-      info.trivia.trim();
+    dailyTransliteration.textContent =
+      transliteration;
 
 
-    dailyTriviaSection.hidden =
+    dailyTransliterationSection.hidden =
+      false;
+  }
+
+
+  if (
+    typeof info.supplementalInfo ===
+      "string"
+    &&
+    info.supplementalInfo.trim()
+  ) {
+
+    dailySupplement.textContent =
+      info.supplementalInfo.trim();
+
+
+    dailySupplementSection.hidden =
       false;
   }
 
@@ -753,7 +957,8 @@ async function loadDailyCharacter() {
 
 
     renderDailyInfo(
-      entry.info
+      entry.info,
+      entry
     );
 
 
