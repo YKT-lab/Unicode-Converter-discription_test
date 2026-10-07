@@ -1,0 +1,36 @@
+name: Unicode Research Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/unicode-research.js"
+      - ".github/workflows/unicode-research-test.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Research test character
+        run: node scripts/unicode-research.js U+13014
+
+      - name: Commit research result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research-test.json
+          git commit -m "Add Unicode research test result" || exit 0
+          git push
