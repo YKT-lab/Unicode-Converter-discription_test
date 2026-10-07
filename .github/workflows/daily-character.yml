@@ -48,8 +48,24 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          DESCRIPTION_TEST_BATCH: "true"
-        run: node scripts/generate-described-daily.js
+        run: |
+          printf '{"generatedAt":"","testOnly":true,"entries":[]}' > description-test.json
+
+          for i in 1 2 3 4 5; do
+            node scripts/generate-described-daily.js
+
+            jq --slurpfile daily daily.json '
+              .entries += [$daily[0].current, $daily[0].next]
+              | .entries |= unique_by(.codePoint)
+              | .entries |= .[:10]
+              | .generatedAt = (now | todateiso8601)
+              | .count = (.entries | length)
+            ' description-test.json > description-test.tmp
+
+            mv description-test.tmp description-test.json
+          done
+
+          git checkout -- daily.json
 
       - name: Commit daily.json
         run: |
