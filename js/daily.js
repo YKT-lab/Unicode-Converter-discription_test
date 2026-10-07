@@ -554,108 +554,12 @@ function getDailyTransliteration(
 }
 
 
-function applyDailyTransliterationFallbacks() {
-
-  const spans =
-    dailyTransliteration.querySelectorAll(
-      ".daily-transliteration-char"
-    );
-
-
-  for (
-    const span
-    of spans
-  ) {
-
-    span.classList.remove(
-      "daily-transliteration-fallback"
-    );
-
-
-    const character =
-      span.textContent;
-
-
-    const fontFamily =
-      getComputedStyle(
-        span
-      )
-      .fontFamily;
-
-
-    if (
-      isRenderedBlank(
-        character,
-        fontFamily
-      )
-      ||
-      looksLikeMissingGlyph(
-        character,
-        fontFamily
-      )
-    ) {
-
-      span.classList.add(
-        "daily-transliteration-fallback"
-      );
-    }
-  }
-}
-
-
 function renderDailyTransliteration(
   text
 ) {
 
-  dailyTransliteration.replaceChildren();
-
-
-  for (
-    const character
-    of text
-  ) {
-
-    const span =
-      document.createElement(
-        "span"
-      );
-
-
-    span.className =
-      "daily-transliteration-char";
-
-
-    span.textContent =
-      character;
-
-
-    dailyTransliteration.appendChild(
-      span
-    );
-  }
-
-
-  requestAnimationFrame(
-    applyDailyTransliterationFallbacks
-  );
-
-
-  if (
-    document.fonts
-    &&
-    document.fonts.ready
-  ) {
-
-    document.fonts.ready
-      .then(
-        () => {
-          applyDailyTransliterationFallbacks();
-        }
-      )
-      .catch(
-        () => {}
-      );
-  }
+  dailyTransliteration.textContent =
+    text;
 }
 
 
