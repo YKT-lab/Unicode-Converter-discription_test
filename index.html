@@ -174,113 +174,148 @@
 
 
       <div
-        id="dailyCharacter"
-        class="
-          character
-          loading-character
-        "
-      >
-        ?
-      </div>
-
-
-      <div
-        id="dailyCode"
-      >
-        読み込み中…
-      </div>
-
-
-      <div
-        id="dailyName"
-        hidden
-      ></div>
-
-
-      <div
-        id="dailyInfo"
-        hidden
+        class="daily-layout"
       >
 
         <div
-          class="daily-info-section"
+          class="daily-character-panel"
         >
+
           <div
-            class="daily-info-heading"
+            class="daily-character-frame"
           >
-            どんな文字？
+
+            <div
+              id="dailyCharacter"
+              class="
+                character
+                loading-character
+              "
+            >
+              ?
+            </div>
+
           </div>
 
-          <p
-            id="dailySummary"
-          ></p>
+
+          <div
+            class="daily-meta"
+          >
+
+            <div
+              id="dailyCode"
+            >
+              読み込み中…
+            </div>
+
+
+            <div
+              id="dailyName"
+              hidden
+            ></div>
+
+          </div>
+
+
+          <div
+            id="dailyResearch"
+          >
+
+            <a
+              id="dailyResearchLink"
+              class="disabled"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              外部サイトで見る(0g0.org様)
+            </a>
+
+          </div>
+
         </div>
 
 
         <div
-          id="dailyUsageSection"
-          class="daily-info-section"
+          id="dailyInfo"
+          class="daily-info-panel"
           hidden
         >
+
           <div
-            class="daily-info-heading"
+            class="daily-info-section"
           >
-            使われ方
+
+            <div
+              class="daily-info-heading"
+            >
+              どんな文字？
+            </div>
+
+            <p
+              id="dailySummary"
+            ></p>
+
           </div>
 
-          <p
-            id="dailyUsage"
-          ></p>
-        </div>
 
-
-        <div
-          id="dailyTriviaSection"
-          class="daily-info-section"
-          hidden
-        >
           <div
-            class="daily-info-heading"
+            id="dailyUsageSection"
+            class="daily-info-section"
+            hidden
           >
-            豆知識
+
+            <div
+              class="daily-info-heading"
+            >
+              使われ方
+            </div>
+
+            <p
+              id="dailyUsage"
+            ></p>
+
           </div>
 
-          <p
-            id="dailyTrivia"
-          ></p>
+
+          <div
+            id="dailyTriviaSection"
+            class="daily-info-section"
+            hidden
+          >
+
+            <div
+              class="daily-info-heading"
+            >
+              豆知識
+            </div>
+
+            <p
+              id="dailyTrivia"
+            ></p>
+
+          </div>
+
+
+          <details
+            id="dailySources"
+            class="daily-sources"
+            hidden
+          >
+
+            <summary
+              class="unicode-scope-excluded"
+            >
+              出典を見る
+            </summary>
+
+            <ul
+              id="dailySourceList"
+            ></ul>
+
+          </details>
+
         </div>
-
-
-        <details
-          id="dailySources"
-          class="daily-sources"
-          hidden
-        >
-          <summary>
-            出典を見る
-          </summary>
-
-          <ul
-            id="dailySourceList"
-          ></ul>
-        </details>
-
-      </div>
-
-
-      <div
-        id="dailyResearch"
-      >
-
-        <a
-          id="dailyResearchLink"
-          class="disabled"
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          外部サイトで見る(0g0.org様)
-        </a>
 
       </div>
 
