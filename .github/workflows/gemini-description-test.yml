@@ -2,6 +2,11 @@ name: Gemini Description Test
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/gemini-description-test.yml"
 
 permissions:
   contents: write
