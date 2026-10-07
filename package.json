@@ -1,6 +1,7 @@
 {
   "private": true,
   "dependencies": {
-    "@cantoo/fontkit": "2.0.12"
+    "@cantoo/fontkit": "2.0.12",
+    "adm-zip": "0.5.16"
   }
 }
