@@ -44,10 +44,11 @@ jobs:
       # 手動実行はテストモード。
       # 今日・明日を再抽選し、Unicode公式資料で審査し、
       # 合格した文字だけGeminiで日本語解説を生成する。
-      - name: Generate described daily characters
+      - name: Generate 10 description test characters
         if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DESCRIPTION_TEST_BATCH: "true"
         run: node scripts/generate-described-daily.js
 
       - name: Commit daily.json
@@ -55,12 +56,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add daily.json
+          git add daily.json description-test.json
 
           if git diff --cached --quiet; then
-            echo "daily.json is already up to date"
+            echo "Generated JSON files are already up to date"
           else
-            git commit -m "Update daily Unicode character"
+            git commit -m "Update Unicode character data"
             git push
           fi
 
