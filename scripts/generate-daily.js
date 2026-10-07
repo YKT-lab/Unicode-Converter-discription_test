@@ -887,4 +887,18 @@ function main() {
 }
 
 
-main();
+
+if (
+  require.main === module
+) {
+  main();
+}
+
+
+module.exports = {
+  DAILY_JSON_PATH,
+  getJSTDateString,
+  loadFonts,
+  generateEntry,
+  loadExistingDailyData
+};
