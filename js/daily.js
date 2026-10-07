@@ -554,6 +554,111 @@ function getDailyTransliteration(
 }
 
 
+function applyDailyTransliterationFallbacks() {
+
+  const spans =
+    dailyTransliteration.querySelectorAll(
+      ".daily-transliteration-char"
+    );
+
+
+  for (
+    const span
+    of spans
+  ) {
+
+    span.classList.remove(
+      "daily-transliteration-fallback"
+    );
+
+
+    const character =
+      span.textContent;
+
+
+    const fontFamily =
+      getComputedStyle(
+        span
+      )
+      .fontFamily;
+
+
+    if (
+      isRenderedBlank(
+        character,
+        fontFamily
+      )
+      ||
+      looksLikeMissingGlyph(
+        character,
+        fontFamily
+      )
+    ) {
+
+      span.classList.add(
+        "daily-transliteration-fallback"
+      );
+    }
+  }
+}
+
+
+function renderDailyTransliteration(
+  text
+) {
+
+  dailyTransliteration.replaceChildren();
+
+
+  for (
+    const character
+    of text
+  ) {
+
+    const span =
+      document.createElement(
+        "span"
+      );
+
+
+    span.className =
+      "daily-transliteration-char";
+
+
+    span.textContent =
+      character;
+
+
+    dailyTransliteration.appendChild(
+      span
+    );
+  }
+
+
+  requestAnimationFrame(
+    applyDailyTransliterationFallbacks
+  );
+
+
+  if (
+    document.fonts
+    &&
+    document.fonts.ready
+  ) {
+
+    document.fonts.ready
+      .then(
+        () => {
+          applyDailyTransliterationFallbacks();
+        }
+      )
+      .catch(
+        () => {}
+      );
+  }
+}
+
+
 function resetDailyInfo() {
 
   dailyName.hidden =
@@ -579,12 +684,11 @@ function resetDailyInfo() {
     "";
 
 
-  dailyTransliterationSection.hidden =
+  dailyTransliterationMeta.hidden =
     true;
 
 
-  dailyTransliteration.textContent =
-    "";
+  dailyTransliteration.replaceChildren();
 
 
   dailySupplementSection.hidden =
@@ -687,11 +791,12 @@ function renderDailyInfo(
     transliteration
   ) {
 
-    dailyTransliteration.textContent =
-      transliteration;
+    renderDailyTransliteration(
+      transliteration
+    );
 
 
-    dailyTransliterationSection.hidden =
+    dailyTransliterationMeta.hidden =
       false;
   }
 
@@ -817,17 +922,6 @@ async function loadDailyCharacter() {
 
 
   resetDailyInfo();
-
-
-  dailyResearchLink
-    .classList
-    .add(
-      "disabled"
-    );
-
-
-  dailyResearchLink.href =
-    "#";
 
 
   try {
@@ -962,14 +1056,6 @@ async function loadDailyCharacter() {
     );
 
 
-    dailyResearchLink.href =
-      "https://0g0.org/unicode/"
-      +
-      hex
-      +
-      "/";
-
-
     /*
       新方式
 
@@ -1057,10 +1143,6 @@ async function loadDailyCharacter() {
       "更新待ち";
 
 
-    dailyResearchLink
-      .classList
-      .add(
-        "disabled"
-      );
+
   }
 }
