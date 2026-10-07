@@ -1,0 +1,32 @@
+name: Bootstrap clone from unicode-converter
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  clone-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+
+      - name: Clone source repository
+        run: git clone --depth=1 https://github.com/YKT-lab/unicode-converter.git /tmp/unicode-converter-source
+
+      - name: Copy source exactly
+        run: |
+          rsync -a --delete --exclude='.git' /tmp/unicode-converter-source/ ./
+
+      - name: Commit cloned contents
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Clone current unicode-converter" || exit 0
+          git push
