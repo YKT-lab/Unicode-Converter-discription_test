@@ -1102,7 +1102,7 @@ document.addEventListener(
 
     if (
       event.target.closest(
-        "button, a, input, textarea, select"
+        "button, a, input, textarea, select, .unicode-scope-excluded"
       )
     ) {
       return;
