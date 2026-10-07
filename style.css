@@ -573,6 +573,123 @@ button:disabled {
 }
 
 
+#dailyName {
+  margin-top: 7px;
+
+  color: #777;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.025em;
+
+  overflow-wrap: anywhere;
+}
+
+
+#dailyInfo {
+  max-width: 620px;
+
+  margin:
+    22px auto 0;
+
+  padding-top: 20px;
+
+  border-top:
+    1px solid
+    #e5e5ea;
+
+  text-align: left;
+}
+
+
+.daily-info-section + .daily-info-section {
+  margin-top: 18px;
+}
+
+
+.daily-info-heading {
+  margin-bottom: 6px;
+
+  color: #555;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.03em;
+}
+
+
+.daily-info-section p {
+  margin: 0;
+
+  color: #262628;
+
+  font-size: 15px;
+
+  line-height: 1.75;
+}
+
+
+.daily-sources {
+  margin-top: 18px;
+
+  padding-top: 14px;
+
+  border-top:
+    1px solid
+    #ededf0;
+}
+
+
+.daily-sources summary {
+  width: fit-content;
+
+  color: #6e6e73;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  user-select: none;
+
+  -webkit-user-select: none;
+}
+
+
+.daily-sources ul {
+  margin:
+    10px 0 0;
+
+  padding-left: 20px;
+}
+
+
+.daily-sources li {
+  margin-top: 6px;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+
+.daily-sources a {
+  color: #007aff;
+
+  text-decoration: none;
+
+  overflow-wrap: anywhere;
+}
+
+
+.daily-sources a:hover {
+  text-decoration: underline;
+}
+
+
 #dailyResearch {
   margin-top: 14px;
 }
@@ -922,6 +1039,20 @@ button:disabled {
     width: 96px;
 
     height: 96px;
+  }
+
+
+  #dailyInfo {
+    margin-top: 18px;
+
+    padding-top: 17px;
+  }
+
+
+  .daily-info-section p {
+    font-size: 14px;
+
+    line-height: 1.7;
   }
 
 
