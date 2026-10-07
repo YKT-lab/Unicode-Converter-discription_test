@@ -1,0 +1,1213 @@
+/* =========================================
+   Unicode Scope
+========================================= */
+
+let currentScopeCode =
+  "";
+
+
+let currentScopeCharacter =
+  "";
+
+
+let scopePointerStart =
+  null;
+
+
+/*
+  この時間以上押した場合は
+  Unicode Scopeではなく
+  ブラウザ標準の長押しとして扱う
+*/
+
+const scopeLongPressThreshold =
+  400;
+
+/* =========================================
+   Scope hide
+========================================= */
+
+function hideUnicodeScope() {
+
+  if (
+    !unicodeScope
+  ) {
+    return;
+  }
+
+
+  unicodeScope
+    .classList
+    .remove(
+      "visible"
+    );
+
+
+  unicodeScope
+    .setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+
+  currentScopeCode =
+    "";
+
+
+  currentScopeCharacter =
+    "";
+
+
+  if (
+    unicodeScopeGlyph
+  ) {
+
+    unicodeScopeGlyph.style.transform =
+      "none";
+  }
+}
+
+/* =========================================
+   Text node characters
+========================================= */
+
+function getCharacterPieces(
+  text
+) {
+
+  const pieces =
+    [];
+
+
+  let utf16Index =
+    0;
+
+
+  for (
+    const character
+    of text
+  ) {
+
+    const start =
+      utf16Index;
+
+
+    utf16Index +=
+      character.length;
+
+
+    pieces.push(
+      {
+        character,
+
+        start,
+
+        end:
+          utf16Index
+      }
+    );
+  }
+
+
+  return pieces;
+}
+
+/* =========================================
+   One character rectangle
+========================================= */
+
+function getCharacterRect(
+  textNode,
+  piece
+) {
+
+  try {
+
+    const range =
+      document.createRange();
+
+
+    range.setStart(
+      textNode,
+      piece.start
+    );
+
+
+    range.setEnd(
+      textNode,
+      piece.end
+    );
+
+
+    const rect =
+      range.getBoundingClientRect();
+
+
+    if (
+      rect.width <=
+        0
+      &&
+      rect.height <=
+        0
+    ) {
+
+      return null;
+    }
+
+
+    return rect;
+
+  } catch (
+    error
+  ) {
+
+    return null;
+  }
+}
+
+/* =========================================
+   Nearest character from tap point
+========================================= */
+
+function getCharacterFromPoint(
+  x,
+  y
+) {
+
+  let textNode =
+    null;
+
+
+  let offset =
+    0;
+
+
+  /*
+    Safari / Chrome
+  */
+
+  if (
+    document.caretRangeFromPoint
+  ) {
+
+    const range =
+      document.caretRangeFromPoint(
+        x,
+        y
+      );
+
+
+    if (
+      range
+    ) {
+
+      textNode =
+        range.startContainer;
+
+
+      offset =
+        range.startOffset;
+    }
+  }
+
+
+  /*
+    Firefox
+  */
+
+  else if (
+    document.caretPositionFromPoint
+  ) {
+
+    const position =
+      document.caretPositionFromPoint(
+        x,
+        y
+      );
+
+
+    if (
+      position
+    ) {
+
+      textNode =
+        position.offsetNode;
+
+
+      offset =
+        position.offset;
+    }
+  }
+
+
+  if (
+    !textNode
+  ) {
+    return null;
+  }
+
+
+  if (
+    textNode.nodeType ===
+    Node.ELEMENT_NODE
+  ) {
+
+    const childIndex =
+      Math.max(
+        0,
+        Math.min(
+          offset,
+          textNode.childNodes.length -
+          1
+        )
+      );
+
+
+    const child =
+      textNode.childNodes[
+        childIndex
+      ];
+
+
+    if (
+      child
+      &&
+      child.nodeType ===
+        Node.TEXT_NODE
+    ) {
+
+      textNode =
+        child;
+
+
+      offset =
+        Math.min(
+          offset,
+          textNode.data.length
+        );
+
+    } else {
+
+      return null;
+    }
+  }
+
+
+  if (
+    textNode.nodeType !==
+    Node.TEXT_NODE
+  ) {
+    return null;
+  }
+
+
+  const text =
+    textNode.data;
+
+
+  if (
+    !text
+    ||
+    text.trim() ===
+      ""
+  ) {
+    return null;
+  }
+
+
+  const pieces =
+    getCharacterPieces(
+      text
+    );
+
+
+  if (
+    pieces.length ===
+    0
+  ) {
+    return null;
+  }
+
+
+  let best =
+    null;
+
+
+  let bestDistance =
+    Infinity;
+
+
+  for (
+    const piece
+    of pieces
+  ) {
+
+    if (
+      /^\s+$/u.test(
+        piece.character
+      )
+    ) {
+      continue;
+    }
+
+
+    const rect =
+      getCharacterRect(
+        textNode,
+        piece
+      );
+
+
+    if (
+      !rect
+    ) {
+      continue;
+    }
+
+
+    const padding =
+      7;
+
+
+    const inside =
+      x >=
+        rect.left -
+        padding
+      &&
+      x <=
+        rect.right +
+        padding
+      &&
+      y >=
+        rect.top -
+        padding
+      &&
+      y <=
+        rect.bottom +
+        padding;
+
+
+    if (
+      !inside
+    ) {
+      continue;
+    }
+
+
+    const centerX =
+      rect.left +
+      rect.width /
+      2;
+
+
+    const centerY =
+      rect.top +
+      rect.height /
+      2;
+
+
+    const distance =
+      Math.hypot(
+        x -
+        centerX,
+        y -
+        centerY
+      );
+
+
+    if (
+      distance <
+      bestDistance
+    ) {
+
+      bestDistance =
+        distance;
+
+
+      best = {
+        character:
+          piece.character,
+
+        rect,
+
+        textNode
+      };
+    }
+  }
+
+
+  return best;
+}
+
+/* =========================================
+   Scope glyph auto fit
+========================================= */
+
+function fitUnicodeScopeGlyph(
+  character
+) {
+
+  if (
+    !unicodeScopeGlyph
+    ||
+    !unicodeScope
+    ||
+    !unicodeScope.classList.contains(
+      "visible"
+    )
+  ) {
+    return;
+  }
+
+
+  unicodeScopeGlyph.style.transform =
+    "none";
+
+
+  const style =
+    getComputedStyle(
+      unicodeScopeGlyph
+    );
+
+
+  const fontFamily =
+    style.fontFamily;
+
+
+  const fontSize =
+    parseFloat(
+      style.fontSize
+    )
+    ||
+    32;
+
+
+  const analysis =
+    analyseGlyphPixels(
+      character,
+      fontFamily,
+      120
+    );
+
+
+  const maxInkWidth =
+    42;
+
+
+  const maxInkHeight =
+    42;
+
+
+  let scale =
+    1;
+
+
+  if (
+    analysis.inkPixels >
+    0
+  ) {
+
+    const expectedWidth =
+      analysis.width
+      *
+      (
+        fontSize /
+        120
+      );
+
+
+    const expectedHeight =
+      analysis.height
+      *
+      (
+        fontSize /
+        120
+      );
+
+
+    const scaleX =
+      maxInkWidth /
+      Math.max(
+        expectedWidth,
+        1
+      );
+
+
+    const scaleY =
+      maxInkHeight /
+      Math.max(
+        expectedHeight,
+        1
+      );
+
+
+    scale =
+      Math.min(
+        1.15,
+        scaleX,
+        scaleY
+      );
+
+  } else {
+
+    const rect =
+      unicodeScopeGlyph
+        .getBoundingClientRect();
+
+
+    const scaleX =
+      maxInkWidth /
+      Math.max(
+        rect.width,
+        1
+      );
+
+
+    const scaleY =
+      maxInkHeight /
+      Math.max(
+        rect.height,
+        1
+      );
+
+
+    scale =
+      Math.min(
+        1.15,
+        scaleX,
+        scaleY
+      );
+  }
+
+
+  scale =
+    Math.max(
+      0.08,
+      scale
+    );
+
+
+  unicodeScopeGlyph.style.transform =
+    `scale(${scale})`;
+}
+
+/* =========================================
+   Scope show
+========================================= */
+
+function showUnicodeScope(
+  result
+) {
+
+  if (
+    !unicodeScope
+    ||
+    !unicodeScopeGlyph
+    ||
+    !unicodeScopeCode
+  ) {
+    return;
+  }
+
+
+  const character =
+    result.character;
+
+
+  const codePoint =
+    character
+      .codePointAt(
+        0
+      );
+
+
+  const code =
+    "U+"
+    +
+    codePoint
+      .toString(
+        16
+      )
+      .toUpperCase()
+      .padStart(
+        4,
+        "0"
+      );
+
+
+  currentScopeCharacter =
+    character;
+
+
+  currentScopeCode =
+    code;
+
+
+  unicodeScopeGlyph.style.transform =
+    "none";
+
+
+  unicodeScopeGlyph.textContent =
+    character;
+
+
+  unicodeScopeCode.textContent =
+    code;
+
+
+  unicodeScopeCode.setAttribute(
+    "aria-label",
+    `${code} をコピー`
+  );
+
+
+  const parentElement =
+    result.textNode
+      .parentElement;
+
+
+  if (
+    parentElement
+  ) {
+
+    const style =
+      getComputedStyle(
+        parentElement
+      );
+
+
+    unicodeScopeGlyph.style.fontFamily =
+      style.fontFamily;
+
+
+    unicodeScopeGlyph.style.fontWeight =
+      style.fontWeight;
+
+
+    unicodeScopeGlyph.style.fontStyle =
+      style.fontStyle;
+  }
+
+
+  const rect =
+    result.rect;
+
+
+  let centerX =
+    rect.left +
+    rect.width /
+    2;
+
+
+  let centerY =
+    rect.top +
+    rect.height /
+    2;
+
+
+  centerX =
+    Math.max(
+      38,
+      Math.min(
+        window.innerWidth -
+        38,
+        centerX
+      )
+    );
+
+
+  centerY =
+    Math.max(
+      38,
+      centerY
+    );
+
+
+  unicodeScope.style.left =
+    centerX +
+    "px";
+
+
+  unicodeScope.style.top =
+    centerY +
+    "px";
+
+
+  let codeTop =
+    46;
+
+
+  if (
+    centerY +
+    100 >
+    window.innerHeight
+  ) {
+
+    codeTop =
+      -56;
+  }
+
+
+  unicodeScope.style.setProperty(
+    "--code-top",
+    codeTop +
+    "px"
+  );
+
+
+  unicodeScope
+    .classList
+    .add(
+      "visible"
+    );
+
+
+  unicodeScope
+    .setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+
+  requestAnimationFrame(
+    () => {
+
+      if (
+        currentScopeCharacter ===
+        character
+      ) {
+
+        fitUnicodeScopeGlyph(
+          character
+        );
+      }
+
+    }
+  );
+
+
+  if (
+    document.fonts
+    &&
+    document.fonts.ready
+  ) {
+
+    document.fonts.ready
+      .then(
+        () => {
+
+          if (
+            currentScopeCharacter ===
+              character
+            &&
+            unicodeScope.classList.contains(
+              "visible"
+            )
+          ) {
+
+            fitUnicodeScopeGlyph(
+              character
+            );
+          }
+
+        }
+      )
+      .catch(
+        () => {}
+      );
+  }
+}
+
+/* =========================================
+   Copy Scope Unicode
+========================================= */
+
+async function copyScopeCode() {
+
+  if (
+    !currentScopeCode
+  ) {
+    return;
+  }
+
+
+  const code =
+    currentScopeCode;
+
+
+  let copied =
+    false;
+
+
+  try {
+
+    if (
+      navigator.clipboard
+      &&
+      navigator.clipboard.writeText
+    ) {
+
+      await navigator.clipboard.writeText(
+        code
+      );
+
+
+      copied =
+        true;
+
+    } else {
+
+      throw new Error(
+        "Clipboard API unavailable"
+      );
+    }
+
+  } catch (
+    error
+  ) {
+
+    const textarea =
+      document.createElement(
+        "textarea"
+      );
+
+
+    textarea.value =
+      code;
+
+
+    textarea.setAttribute(
+      "readonly",
+      ""
+    );
+
+
+    textarea.style.position =
+      "fixed";
+
+
+    textarea.style.left =
+      "-9999px";
+
+
+    textarea.style.top =
+      "-9999px";
+
+
+    textarea.style.opacity =
+      "0";
+
+
+    document.body.appendChild(
+      textarea
+    );
+
+
+    textarea.select();
+
+
+    try {
+
+      copied =
+        document.execCommand(
+          "copy"
+        );
+
+    } catch (
+      copyError
+    ) {
+
+      console.warn(
+        "Copy failed:",
+        copyError
+      );
+    }
+
+
+    textarea.remove();
+  }
+
+
+  if (
+    copied
+  ) {
+
+    unicodeScopeCode.textContent =
+      "コピーしました ✓";
+
+  } else {
+
+    unicodeScopeCode.textContent =
+      "コピー失敗";
+  }
+
+
+  setTimeout(
+    () => {
+
+      if (
+        currentScopeCode ===
+        code
+      ) {
+
+        unicodeScopeCode.textContent =
+          code;
+      }
+
+    },
+    900
+  );
+}
+
+/* =========================================
+   Native selection cleanup
+========================================= */
+
+function clearNativeSelection() {
+
+  const selection =
+    window.getSelection();
+
+
+  if (
+    selection
+  ) {
+
+    selection.removeAllRanges();
+  }
+}
+
+/* =========================================
+   Scope pointer detection
+========================================= */
+
+document.addEventListener(
+  "pointerdown",
+  (event) => {
+
+    if (
+      event.target.closest(
+        "#unicodeScope"
+      )
+    ) {
+      return;
+    }
+
+
+    hideUnicodeScope();
+
+
+    scopePointerStart = {
+      x:
+        event.clientX,
+
+      y:
+        event.clientY,
+
+      time:
+        performance.now()
+    };
+
+  },
+  {
+    passive: true
+  }
+);
+
+
+document.addEventListener(
+  "pointerup",
+  (event) => {
+
+    if (
+      event.target.closest(
+        "#unicodeScope"
+      )
+    ) {
+      return;
+    }
+
+
+    if (
+      !scopePointerStart
+    ) {
+      return;
+    }
+
+
+    const start =
+      scopePointerStart;
+
+
+    scopePointerStart =
+      null;
+
+
+    const movement =
+      Math.hypot(
+        event.clientX -
+        start.x,
+
+        event.clientY -
+        start.y
+      );
+
+
+    const duration =
+      performance.now() -
+      start.time;
+
+
+    /*
+      長押しならブラウザ標準動作
+    */
+
+    if (
+      duration >=
+      scopeLongPressThreshold
+    ) {
+      return;
+    }
+
+
+    /*
+      スクロール・スワイプ
+    */
+
+    if (
+      movement >
+      12
+    ) {
+      return;
+    }
+
+
+    /*
+      今日の一文字はSVGなので
+      Unicode Scope対象外にする
+    */
+
+    if (
+      event.target.closest(
+        "#dailyCharacter"
+      )
+    ) {
+      return;
+    }
+
+
+    /*
+      UI部品
+    */
+
+    if (
+      event.target.closest(
+        "button, a, input, textarea, select"
+      )
+    ) {
+      return;
+    }
+
+
+    const result =
+      getCharacterFromPoint(
+        event.clientX,
+        event.clientY
+      );
+
+
+    if (
+      !result
+    ) {
+      return;
+    }
+
+
+    clearNativeSelection();
+
+
+    showUnicodeScope(
+      result
+    );
+
+  },
+  {
+    passive: true
+  }
+);
+
+/* =========================================
+   Pointer cancel
+========================================= */
+
+document.addEventListener(
+  "pointercancel",
+  () => {
+
+    scopePointerStart =
+      null;
+
+  },
+  {
+    passive: true
+  }
+);
+
+/* =========================================
+   Scope copy button
+========================================= */
+
+if (
+  unicodeScopeCode
+) {
+
+  unicodeScopeCode.addEventListener(
+    "pointerdown",
+    (event) => {
+
+      event.stopPropagation();
+
+    }
+  );
+
+
+  unicodeScopeCode.addEventListener(
+    "pointerup",
+    (event) => {
+
+      event.stopPropagation();
+
+    }
+  );
+
+
+  unicodeScopeCode.addEventListener(
+    "click",
+    (event) => {
+
+      event.stopPropagation();
+
+
+      copyScopeCode();
+
+    }
+  );
+}
+
+/* =========================================
+   Scope close conditions
+========================================= */
+
+window.addEventListener(
+  "scroll",
+  hideUnicodeScope,
+  {
+    passive: true
+  }
+);
+
+
+window.addEventListener(
+  "resize",
+  hideUnicodeScope
+);

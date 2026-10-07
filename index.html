@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>文字 ⇄ Unicode 変換</title>
+
+
+  <!-- ================================= -->
+  <!-- Google Fonts 接続 -->
+  <!-- ================================= -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+
+  <!-- ================================= -->
+  <!-- Unicode用 Web Fonts -->
+  <!-- ================================= -->
+
+  <!-- Kawi -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kawi&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Toto -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+Toto&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Tangut -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tangut&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Nüshu -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Nushu&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Khitan Small Script -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+Khitan+Small+Script&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Cuneiform -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Cuneiform&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Egyptian Hieroglyphs -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Anatolian Hieroglyphs -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Anatolian+Hieroglyphs&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Tangsa -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tangsa&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Nandinagari -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Nandinagari&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Music -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Music&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- SignWriting -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+SignWriting&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Symbols -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Mathematical symbols -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Math&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Indic Siyaq Numbers -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Indic+Siyaq+Numbers&display=swap"
+    rel="stylesheet"
+  >
+
+
+  <!-- ================================= -->
+  <!-- サイトCSS -->
+  <!-- ================================= -->
+
+  <link
+    rel="stylesheet"
+    href="./style.css"
+  >
+
+
+<!-- ================================= -->
+<!-- サイトJavaScript -->
+<!-- ================================= -->
+
+<script src="./js/config.js" defer></script>
+<script src="./js/fonts.js" defer></script>
+<script src="./js/glyph-check.js" defer></script>
+<script src="./js/converter.js" defer></script>
+<script src="./js/random.js" defer></script>
+<script src="./js/daily.js" defer></script>
+<script src="./js/scope.js" defer></script>
+<script src="./js/main.js" defer></script>
+
+</head>
+
+
+<body>
+
+  <main>
+
+    <h1>
+      文字 ⇄ Unicode
+    </h1>
+
+
+    <!-- ================================= -->
+    <!-- 今日の一文字 -->
+    <!-- ================================= -->
+
+    <section
+      id="dailyCharacterBox"
+    >
+
+      <div
+        id="dailyTitle"
+      >
+        今日の一文字
+      </div>
+
+
+      <div
+        id="dailyCharacter"
+        class="
+          character
+          loading-character
+        "
+      >
+        ?
+      </div>
+
+
+      <div
+        id="dailyCode"
+      >
+        読み込み中…
+      </div>
+
+
+      <div
+        id="dailyResearch"
+      >
+
+        <a
+          id="dailyResearchLink"
+          class="disabled"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          外部サイトで見る(0g0.org様)
+        </a>
+
+      </div>
+
+    </section>
+
+
+<!-- ================================= -->
+<!-- 文字 → Unicode -->
+<!-- ================================= -->
+
+<section
+  class="box"
+>
+
+  <h2>
+    文字 → Unicode
+  </h2>
+
+
+  <textarea
+    id="charInput"
+    placeholder="文字を入力"
+  ></textarea>
+
+
+  <div
+    class="input-view-control"
+  >
+
+    <button
+      id="toggleCharView"
+      type="button"
+      class="expand-button"
+    >
+      全表示
+    </button>
+
+  </div>
+
+
+  <div
+    id="unicodeOutput"
+    class="
+      result
+      unicode-result
+    "
+  ></div>
+
+
+  <button
+    id="clearChar"
+    type="button"
+  >
+    クリア
+  </button>
+
+</section>
+
+
+<!-- ================================= -->
+<!-- Unicode → 文字 -->
+<!-- ================================= -->
+
+<section
+  class="box"
+>
+
+  <h2>
+    Unicode → 文字
+  </h2>
+
+
+  <textarea
+    id="unicodeInput"
+    placeholder="例: U+1E290 または 1E290"
+    rows="1"
+  ></textarea>
+
+
+  <div
+    class="input-view-control"
+  >
+
+    <button
+      id="toggleUnicodeView"
+      type="button"
+      class="expand-button"
+    >
+      全表示
+    </button>
+
+  </div>
+
+
+  <div
+    class="hint"
+  >
+    U+1E290 / 1E290 / 0x1E290 に対応。
+    複数入力は空白・改行・カンマで区切れます。
+  </div>
+
+
+<!-- ランダム・履歴操作 -->
+
+<div class="unicode-controls">
+
+  <div class="random-buttons">
+
+    <button
+      type="button"
+      class="random-button"
+      data-random-count="5"
+    >
+      ランダム5個
+    </button>
+
+    <button
+      type="button"
+      class="random-button"
+      data-random-count="10"
+    >
+      ランダム10個
+    </button>
+
+    <button
+      type="button"
+      class="random-button"
+      data-random-count="100"
+    >
+      ランダム100個
+    </button>
+
+  </div>
+
+
+  <div class="history-controls">
+
+    <button
+      id="backUnicode"
+      type="button"
+      class="back-button"
+      disabled
+    >
+      ← 戻る
+    </button>
+
+  </div>
+
+</div>
+
+
+  <!-- 変換結果 -->
+
+  <div
+    id="charOutput"
+    class="
+      result
+      character-result
+    "
+  ></div>
+
+
+  <button
+    id="clearUnicode"
+    type="button"
+  >
+    クリア
+  </button>
+
+</section>
+
+
+    <!-- ================================= -->
+    <!-- Font Credit -->
+    <!-- ================================= -->
+
+    <div class="font-credit">
+  Fonts:
+  Noto Fonts /
+  Plangothic Project /
+  Egyptology Extended /
+  UniHieroglyphica /
+  BabelStone Pseudographica
+</div>
+
+  </main>
+<div
+  id="unicodeScope"
+  aria-hidden="true"
+>
+  <div
+    id="unicodeScopeRing"
+  >
+    <span
+      id="unicodeScopeGlyph"
+    ></span>
+  </div>
+
+  <button
+    id="unicodeScopeCode"
+    type="button"
+    aria-label="Unicodeコードをコピー"
+  ></button>
+</div>
+
+</body>
+
+</html>
