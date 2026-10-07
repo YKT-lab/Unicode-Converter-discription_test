@@ -1538,3 +1538,214 @@ button:disabled {
   }
 
 }
+
+
+/* =========================================
+   Daily character - split layout
+========================================= */
+
+#dailyCharacterBox {
+  padding:
+    22px;
+
+  text-align: left;
+}
+
+
+#dailyTitle {
+  margin-bottom: 16px;
+
+  text-align: left;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  color: #555;
+}
+
+
+.daily-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(190px, 0.78fr)
+    minmax(0, 1.5fr);
+
+  gap: 24px;
+
+  align-items: stretch;
+}
+
+
+.daily-character-panel {
+  min-width: 0;
+}
+
+
+.daily-character-frame {
+  display: flex;
+
+  min-height: 200px;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 22px;
+
+  border:
+    1px solid
+    #dcdce1;
+
+  border-radius: 18px;
+
+  background:
+    #fafafa;
+}
+
+
+#dailyCharacter {
+  width: 100%;
+
+  min-height: 150px;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+.daily-meta {
+  margin-top: 13px;
+
+  text-align: center;
+}
+
+
+#dailyCode {
+  margin-top: 0;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  color: #3b3b3d;
+}
+
+
+#dailyName {
+  margin-top: 6px;
+
+  text-align: center;
+
+  font-size: 11px;
+
+  line-height: 1.45;
+}
+
+
+#dailyResearch {
+  margin-top: 12px;
+
+  text-align: center;
+}
+
+
+#dailyResearchLink {
+  font-size: 13px;
+}
+
+
+#dailyInfo {
+  max-width: none;
+
+  margin: 0;
+
+  padding:
+    18px 20px;
+
+  border:
+    1px solid
+    #e3e3e7;
+
+  border-radius: 18px;
+
+  background:
+    #fff;
+
+  text-align: left;
+}
+
+
+.daily-info-section + .daily-info-section {
+  margin-top: 20px;
+}
+
+
+.daily-info-heading {
+  margin-bottom: 7px;
+
+  color: #4f4f54;
+
+  font-size: 13px;
+}
+
+
+.daily-info-section p {
+  font-size: 15px;
+
+  line-height: 1.75;
+}
+
+
+.daily-sources {
+  margin-top: 20px;
+}
+
+
+.daily-sources summary.unicode-scope-excluded {
+  display: inline-block;
+
+  padding:
+    6px 9px;
+
+  border-radius: 8px;
+
+  background: #f2f2f5;
+
+  color: #666;
+
+  line-height: 1.2;
+}
+
+
+@media (
+  max-width:
+  620px
+) {
+
+  .daily-layout {
+    grid-template-columns:
+      1fr;
+
+    gap: 16px;
+  }
+
+
+  .daily-character-frame {
+    min-height: 170px;
+  }
+
+
+  #dailyCharacter {
+    min-height: 125px;
+  }
+
+
+  #dailyInfo {
+    padding:
+      17px;
+  }
+
+}
