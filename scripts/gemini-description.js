@@ -38,31 +38,25 @@ const prompt = [
 ].join("\n");
 
 const body = {
-  contents: [
-    {
-      parts: [
-        {
-          text: prompt
-        }
-      ]
-    }
-  ],
-  generationConfig: {
-    thinkingConfig: {
-      thinkingBudget: 0
-    },
-    responseMimeType: "application/json",
-    responseSchema: {
-      type: "OBJECT",
+  model: "gemini-3.8-flash",
+  input: prompt,
+  generation_config: {
+    thinking_level: "low"
+  },
+  response_format: {
+    type: "text",
+    mime_type: "application/json",
+    schema: {
+      type: "object",
       properties: {
         summary: {
-          type: "STRING"
+          type: "string"
         },
         usage: {
-          type: "STRING"
+          type: "string"
         },
         trivia: {
-          type: "STRING"
+          type: "string"
         }
       },
       required: [
@@ -76,7 +70,7 @@ const body = {
 
 async function main() {
   const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+    "https://generativelanguage.googleapis.com/v1beta/interactions",
     {
       method: "POST",
       headers: {
@@ -101,15 +95,17 @@ async function main() {
 
   const data = JSON.parse(raw);
 
-  const text =
-    data?.candidates?.[0]?.content?.parts
-      ?.map((part) => part.text || "")
-      .join("")
-      .trim();
+  const text = (data.steps || [])
+    .filter((step) => step.type === "model_output")
+    .flatMap((step) => step.content || [])
+    .filter((part) => part.type === "text")
+    .map((part) => part.text || "")
+    .join("")
+    .trim();
 
   if (!text) {
     throw new Error(
-      "Gemini returned no text."
+      "Gemini returned no text. Raw response: " + raw
     );
   }
 
@@ -118,7 +114,7 @@ async function main() {
   const result = {
     generatedAt: new Date().toISOString(),
     testOnly: true,
-    model: "gemini-2.5-flash",
+    model: "gemini-3.8-flash",
     character: research.character,
     codePoint: research.codePoint,
     unicodeName: research.metadata.unicodeName,
