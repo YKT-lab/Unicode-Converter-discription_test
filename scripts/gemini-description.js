@@ -38,7 +38,7 @@ const prompt = [
 ].join("\n");
 
 const body = {
-  model: "gemini-3.7-flash",
+  model: "gemini-3.5-flash",
   input: prompt,
   generation_config: {
     thinking_level: "low"
@@ -114,7 +114,7 @@ async function main() {
   const result = {
     generatedAt: new Date().toISOString(),
     testOnly: true,
-    model: "gemini-3.7-flash",
+    model: "gemini-3.5-flash",
     character: research.character,
     codePoint: research.codePoint,
     unicodeName: research.metadata.unicodeName,
