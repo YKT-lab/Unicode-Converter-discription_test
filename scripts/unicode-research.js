@@ -7,13 +7,13 @@ const OUTPUT_PATH = path.join(ROOT, "research-test.json");
 const UCD_BASE = "https://www.unicode.org/Public/UCD/latest/ucd";
 
 const SOURCES = {
-  derivedName: \`\${UCD_BASE}/extracted/DerivedName.txt\`,
-  blocks: \`\${UCD_BASE}/Blocks.txt\`,
-  scripts: \`\${UCD_BASE}/Scripts.txt\`,
-  age: \`\${UCD_BASE}/DerivedAge.txt\`,
-  generalCategory: \`\${UCD_BASE}/extracted/DerivedGeneralCategory.txt\`,
-  namesList: \`\${UCD_BASE}/NamesList.txt\`,
-  unikemet: \`\${UCD_BASE}/Unikemet.txt\`
+  derivedName: `${UCD_BASE}/extracted/DerivedName.txt`,
+  blocks: `${UCD_BASE}/Blocks.txt`,
+  scripts: `${UCD_BASE}/Scripts.txt`,
+  age: `${UCD_BASE}/DerivedAge.txt`,
+  generalCategory: `${UCD_BASE}/extracted/DerivedGeneralCategory.txt`,
+  namesList: `${UCD_BASE}/NamesList.txt`,
+  unikemet: `${UCD_BASE}/Unikemet.txt`
 };
 
 function parseCodePoint(input) {
@@ -53,7 +53,7 @@ async function fetchText(url) {
   });
 
   if (!response.ok) {
-    throw new Error(\`\${response.status} \${response.statusText}: \${url}\`);
+    throw new Error(`${response.status} ${response.statusText}: ${url}`);
   }
 
   return response.text();
@@ -158,7 +158,7 @@ function findNamesListEntry(text, codePoint) {
 }
 
 function findUnikemet(text, codePoint) {
-  const target = \`U+\${hex(codePoint)}\`;
+  const target = `U+${hex(codePoint)}`;
   const properties = {};
 
   for (const line of text.split(/\r?\n/)) {
@@ -210,7 +210,7 @@ function makeFacts(namesList, unikemet) {
   for (const item of namesList) {
     if (["comment", "alias", "formalAlias", "notice"].includes(item.type)) {
       push(
-        \`namesList:\${item.type}\`,
+        `namesList:${item.type}`,
         item.text,
         "Unicode NamesList",
         item.type === "comment" ? "strong" : "supporting"
@@ -229,7 +229,7 @@ async function main() {
   const codePoint = parseCodePoint(process.argv[2] || process.env.CODE_POINT);
   const character = String.fromCodePoint(codePoint);
 
-  console.log(\`Researching \${character} U+\${hex(codePoint)}...\`);
+  console.log(`Researching ${character} U+${hex(codePoint)}...`);
 
   const [
     derivedNameText,
@@ -270,7 +270,7 @@ async function main() {
       ? "Unicode公式資料から、文字固有の情報を2件以上（うち強い情報1件以上）確認できた。"
       : "Unicode公式資料だけでは、現在の掲載基準を満たす文字固有情報を確認できなかった。",
     character,
-    codePoint: \`U+\${hex(codePoint)}\`,
+    codePoint: `U+${hex(codePoint)}`,
     metadata: {
       unicodeName,
       block,
@@ -303,7 +303,7 @@ async function main() {
     strongFactCount: strongFacts.length
   }, null, 2));
 
-  console.log(\`Saved: \${OUTPUT_PATH}\`);
+  console.log(`Saved: ${OUTPUT_PATH}`);
 }
 
 main().catch((error) => {
