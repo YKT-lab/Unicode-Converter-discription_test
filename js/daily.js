@@ -1082,15 +1082,7 @@ async function loadDailyCharacter() {
         character
       );
 
-
-      dailyResearchLink
-        .classList
-        .remove(
-          "disabled"
-        );
-
-
-      return;
+return;
     }
 
 
@@ -1115,14 +1107,7 @@ async function loadDailyCharacter() {
       character
     );
 
-
-    dailyResearchLink
-      .classList
-      .remove(
-        "disabled"
-      );
-
-  } catch (
+} catch (
     error
   ) {
 

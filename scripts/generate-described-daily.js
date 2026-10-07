@@ -863,7 +863,7 @@ async function generateDescription(
     "資料にない事実を補わないでください。推測は禁止です。",
     "同じ事実を言い換えて水増ししないでください。",
     "summaryは1〜2文、usageは1〜2文、supplementalInfoは必要な場合だけ1文程度にしてください。",
-    "summaryで対象文字を主語にする場合は、U+XXXXではなく対象文字そのものを使ってください。",
+    "summaryは対象文字・U+XXXX・Unicode名・「この文字は」などを主語にせず、見た目や意味の説明から直接始めてください。たとえば「横向きの角を持つ雄羊の頭をした蛇を表します。」のように書いてください。",
     "usageには転写や読みを混ぜず、意味や機能だけを書いてください。転写はfactsのfunctionValueから別欄に表示します。",
     "supplementalInfoは本文を理解する助けになる追加情報だけにしてください。",
     "カタログ番号・分類番号・Unicode名・コードポイント・ブロック名・Unicode追加バージョンだけしか材料がない場合、supplementalInfoは必ず空文字列にしてください。",
@@ -1151,6 +1151,24 @@ async function generateAcceptedEntry(
       );
 
 
+    const hasSupplementalFacts =
+      research.facts.some(
+        (
+          fact
+        ) =>
+          ![
+            "appearance",
+            "function",
+            "functionValue",
+            "namesList:comment",
+            "catalogIndex",
+            "taxonomyIndex"
+          ].includes(
+            fact.kind
+          )
+      );
+
+
     return {
       ...entry,
 
@@ -1164,7 +1182,9 @@ async function generateAcceptedEntry(
           description.usage,
 
         supplementalInfo:
-          description.supplementalInfo,
+          hasSupplementalFacts
+            ? description.supplementalInfo
+            : "",
 
         facts:
           research.facts,
