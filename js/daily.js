@@ -376,6 +376,222 @@ async function renderDailyFontFallback(
 }
 
 /* =========================================
+   Daily explanation
+========================================= */
+
+function resetDailyInfo() {
+
+  dailyName.hidden =
+    true;
+
+
+  dailyName.textContent =
+    "";
+
+
+  dailyInfo.hidden =
+    true;
+
+
+  dailySummary.textContent =
+    "";
+
+
+  dailyUsageSection.hidden =
+    true;
+
+
+  dailyUsage.textContent =
+    "";
+
+
+  dailyTriviaSection.hidden =
+    true;
+
+
+  dailyTrivia.textContent =
+    "";
+
+
+  dailySources.hidden =
+    true;
+
+
+  dailySources.open =
+    false;
+
+
+  dailySourceList.replaceChildren();
+}
+
+
+function renderDailyInfo(
+  info
+) {
+
+  resetDailyInfo();
+
+
+  if (
+    !info
+    ||
+    typeof info !==
+      "object"
+  ) {
+    return;
+  }
+
+
+  if (
+    typeof info.unicodeName ===
+      "string"
+    &&
+    info.unicodeName.trim()
+  ) {
+
+    dailyName.textContent =
+      info.unicodeName.trim();
+
+
+    dailyName.hidden =
+      false;
+  }
+
+
+  if (
+    typeof info.summary !==
+      "string"
+    ||
+    !info.summary.trim()
+  ) {
+    return;
+  }
+
+
+  dailySummary.textContent =
+    info.summary.trim();
+
+
+  dailyInfo.hidden =
+    false;
+
+
+  if (
+    typeof info.usage ===
+      "string"
+    &&
+    info.usage.trim()
+  ) {
+
+    dailyUsage.textContent =
+      info.usage.trim();
+
+
+    dailyUsageSection.hidden =
+      false;
+  }
+
+
+  if (
+    typeof info.trivia ===
+      "string"
+    &&
+    info.trivia.trim()
+  ) {
+
+    dailyTrivia.textContent =
+      info.trivia.trim();
+
+
+    dailyTriviaSection.hidden =
+      false;
+  }
+
+
+  if (
+    Array.isArray(
+      info.sources
+    )
+  ) {
+
+    for (
+      const source
+      of info.sources
+    ) {
+
+      if (
+        !source
+        ||
+        typeof source.url !==
+          "string"
+        ||
+        !/^https:\/\//i.test(
+          source.url
+        )
+      ) {
+        continue;
+      }
+
+
+      const item =
+        document.createElement(
+          "li"
+        );
+
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
+      link.href =
+        source.url;
+
+
+      link.target =
+        "_blank";
+
+
+      link.rel =
+        "noopener noreferrer";
+
+
+      link.textContent =
+        (
+          typeof source.name ===
+            "string"
+          &&
+          source.name.trim()
+        )
+          ? source.name.trim()
+          : source.url;
+
+
+      item.appendChild(
+        link
+      );
+
+
+      dailySourceList.appendChild(
+        item
+      );
+    }
+
+
+    if (
+      dailySourceList.children.length >
+        0
+    ) {
+
+      dailySources.hidden =
+        false;
+    }
+  }
+}
+
+
+/* =========================================
    Daily character
 ========================================= */
 
@@ -394,6 +610,9 @@ async function loadDailyCharacter() {
 
   dailyCode.textContent =
     "読み込み中…";
+
+
+  resetDailyInfo();
 
 
   dailyResearchLink
@@ -531,6 +750,11 @@ async function loadDailyCharacter() {
       "U+"
       +
       hex;
+
+
+    renderDailyInfo(
+      entry.info
+    );
 
 
     dailyResearchLink.href =
