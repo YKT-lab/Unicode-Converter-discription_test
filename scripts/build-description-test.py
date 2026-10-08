@@ -55,7 +55,7 @@ for index, entry in enumerate(entries, start=1):
         '<section class="test-card">'
         '<div class="test-card-head">'
         f'<span>#{index} / {len(entries)}</span>'
-        f'<span>{esc(info.get("script"))} · {esc(entry.get("font"))}</span>'
+        f'<span>{esc(entry.get("category"))} · {esc(info.get("script"))} · {esc(entry.get("font"))}</span>'
         '</div>'
         '<div class="test-layout">'
         '<div>'
