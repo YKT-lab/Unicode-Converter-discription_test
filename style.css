@@ -17,6 +17,36 @@
 }
 
 
+/* Japanese / kana / common Han */
+
+@font-face {
+  font-family: "Noto Sans JP";
+
+  src:
+    url("./fonts/japanese/NotoSansJP-Variable.ttf")
+    format("truetype");
+
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+
+/* Musical symbols */
+
+@font-face {
+  font-family: "Noto Music";
+
+  src:
+    url("./fonts/music/NotoMusic-Regular.ttf")
+    format("truetype");
+
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+
 /* Tangut Extended */
 
 @font-face {
@@ -753,6 +783,37 @@ button:disabled {
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
+    sans-serif;
+}
+
+
+/* Japanese / common Han */
+
+.font-japanese {
+  font-family:
+    "Noto Sans JP",
+    sans-serif;
+}
+
+
+/* Numbers */
+
+.font-numbers {
+  font-family:
+    "Noto Sans Phonetics",
+    "Noto Sans JP",
+    "Noto Sans Symbols 2 Local",
+    sans-serif;
+}
+
+
+/* Common symbols / punctuation */
+
+.font-symbols-common {
+  font-family:
+    "Noto Sans Symbols 2 Local",
+    "Noto Sans JP",
+    "Noto Sans Phonetics",
     sans-serif;
 }
 
