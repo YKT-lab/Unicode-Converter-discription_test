@@ -84,7 +84,7 @@ html = f'''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>今日の一文字 10件テスト</title>
-<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./style.css">\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&display=swap">
 <style>
 main.test-main{{max-width:920px}}
 .test-head{{margin-bottom:18px}}
