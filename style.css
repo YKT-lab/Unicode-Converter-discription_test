@@ -2,6 +2,21 @@
    Local fonts
 ========================================= */
 
+/* Phonetics / transliteration */
+
+@font-face {
+  font-family: "Noto Sans Phonetics";
+
+  src:
+    url("./fonts/phonetics/NotoSans-Regular.ttf")
+    format("truetype");
+
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+
 /* Tangut Extended */
 
 @font-face {
@@ -729,10 +744,11 @@ button:disabled {
 }
 
 
-/* Latin Extended-D */
+/* Phonetics / transliteration */
 
-.font-latin-extended-d {
+.font-phonetics {
   font-family:
+    "Noto Sans Phonetics",
     "Noto Sans",
     -apple-system,
     BlinkMacSystemFont,
@@ -1922,6 +1938,7 @@ button:disabled {
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
+    "Noto Sans Phonetics",
     "Noto Sans",
     sans-serif;
 }
