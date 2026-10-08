@@ -6,6 +6,19 @@ function getFontClass(
   codePoint
 ) {
 
+  /* Latin Extended-D */
+
+  if (
+    inRange(
+      codePoint,
+      0xA720,
+      0xA7FF
+    )
+  ) {
+    return "font-latin-extended-d";
+  }
+
+
   /* Kawi */
 
   if (
@@ -429,6 +442,12 @@ function getWebFontNames(
       codePoint
     )
   ) {
+
+    case "font-latin-extended-d":
+      return [
+        "Noto Sans"
+      ];
+
 
     case "font-kawi":
       return [
