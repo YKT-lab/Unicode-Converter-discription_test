@@ -6,16 +6,64 @@ function getFontClass(
   codePoint
 ) {
 
-  /* Latin Extended-D */
+  /* Phonetics / transliteration */
 
   if (
     inRange(
       codePoint,
-      0xA720,
+      0x0250,
+      0x02FF
+    )
+    ||
+    inRange(
+      codePoint,
+      0x0300,
+      0x036F
+    )
+    ||
+    inRange(
+      codePoint,
+      0x1D00,
+      0x1DBF
+    )
+    ||
+    inRange(
+      codePoint,
+      0x1DC0,
+      0x1DFF
+    )
+    ||
+    inRange(
+      codePoint,
+      0x1E00,
+      0x1EFF
+    )
+    ||
+    inRange(
+      codePoint,
+      0xA700,
       0xA7FF
     )
+    ||
+    inRange(
+      codePoint,
+      0xAB30,
+      0xAB6F
+    )
+    ||
+    inRange(
+      codePoint,
+      0x10780,
+      0x107BF
+    )
+    ||
+    inRange(
+      codePoint,
+      0x1DF00,
+      0x1DFFF
+    )
   ) {
-    return "font-latin-extended-d";
+    return "font-phonetics";
   }
 
 
@@ -443,9 +491,9 @@ function getWebFontNames(
     )
   ) {
 
-    case "font-latin-extended-d":
+    case "font-phonetics":
       return [
-        "Noto Sans"
+        "Noto Sans Phonetics"
       ];
 
 
