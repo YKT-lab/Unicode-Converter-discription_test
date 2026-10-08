@@ -17,21 +17,6 @@
 }
 
 
-/* Japanese / kana / common Han */
-
-@font-face {
-  font-family: "Noto Sans JP";
-
-  src:
-    url("./fonts/japanese/NotoSansJP-Variable.ttf")
-    format("truetype");
-
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-}
-
-
 /* Musical symbols */
 
 @font-face {
