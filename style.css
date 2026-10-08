@@ -729,6 +729,18 @@ button:disabled {
 }
 
 
+/* Latin Extended-D */
+
+.font-latin-extended-d {
+  font-family:
+    "Noto Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
 /* Kawi */
 
 .font-kawi {
