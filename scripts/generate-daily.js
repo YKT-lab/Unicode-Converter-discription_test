@@ -102,8 +102,11 @@ const FONT_FILES = [
     name:
       "Noto Sans JP",
 
-    file:
-      "fonts/japanese/NotoSansJP-Variable.ttf"
+    directory:
+      "node_modules/@fontsource/noto-sans-jp/files",
+
+    fileSuffix:
+      "-400-normal.woff2"
   },
 
   {
@@ -713,9 +716,90 @@ function loadFonts() {
     [];
 
 
+  const fontItems =
+    [];
+
+
   for (
     const item
     of FONT_FILES
+  ) {
+
+    if (
+      item.directory
+    ) {
+
+      const absoluteDirectory =
+        path.join(
+          ROOT,
+          item.directory
+        );
+
+
+      if (
+        !fs.existsSync(
+          absoluteDirectory
+        )
+      ) {
+
+        console.warn(
+          `Font directory not found: ${item.directory}`
+        );
+
+
+        continue;
+      }
+
+
+      const fileNames =
+        fs.readdirSync(
+          absoluteDirectory
+        )
+        .filter(
+          (
+            fileName
+          ) =>
+            !item.fileSuffix
+            ||
+            fileName.endsWith(
+              item.fileSuffix
+            )
+        );
+
+
+      for (
+        const fileName
+        of fileNames
+      ) {
+
+        fontItems.push(
+          {
+            name:
+              item.name,
+
+            file:
+              path.join(
+                item.directory,
+                fileName
+              )
+          }
+        );
+      }
+
+
+      continue;
+    }
+
+
+    fontItems.push(
+      item
+    );
+  }
+
+
+  for (
+    const item
+    of fontItems
   ) {
 
     const absolutePath =
@@ -757,13 +841,8 @@ function loadFonts() {
 
       if (
         candidates.length ===
-        0
+          0
       ) {
-
-        console.warn(
-          `No candidates: ${item.name}`
-        );
-
 
         continue;
       }
@@ -818,11 +897,6 @@ function loadFonts() {
         }
       );
 
-
-      console.log(
-        `${item.name}: ${candidates.length} candidates`
-      );
-
     } catch (
       error
     ) {
@@ -837,7 +911,7 @@ function loadFonts() {
 
   if (
     fonts.length ===
-    0
+      0
   ) {
 
     throw new Error(
@@ -846,9 +920,46 @@ function loadFonts() {
   }
 
 
+  const counts =
+    new Map();
+
+
+  for (
+    const fontRecord
+    of fonts
+  ) {
+
+    counts.set(
+      fontRecord.name,
+      (
+        counts.get(
+          fontRecord.name
+        )
+        ||
+        0
+      )
+      +
+      fontRecord.candidates.length
+    );
+  }
+
+
+  for (
+    const [
+      name,
+      count
+    ]
+    of counts
+  ) {
+
+    console.log(
+      `${name}: ${count} candidates`
+    );
+  }
+
+
   return fonts;
 }
-
 
 /* =========================================
    Glyph → SVG data
@@ -1337,7 +1448,7 @@ function getDisplayFontPriority(
 }
 
 
-function getLocalFontRecordByDisplayName(
+function getLocalFontRecordsByDisplayName(
   fonts,
   displayName
 ) {
@@ -1356,17 +1467,14 @@ function getLocalFontRecordByDisplayName(
     displayName;
 
 
-  return fonts.find(
+  return fonts.filter(
     (
       item
     ) =>
       item.name ===
         recordName
-  )
-  ||
-  null;
+  );
 }
-
 
 function resolveDisplaySvg(
   fonts,
@@ -1388,16 +1496,8 @@ function resolveDisplaySvg(
   }
 
 
-  /*
-    Unicode → 文字 側で最初に指定されている
-    フォントがローカルに無い場合は、
-    別フォントでSVGを作ると字体が一致しない。
-
-    そのため、その候補自体を日次文字には採用しない。
-  */
-
-  const firstRecord =
-    getLocalFontRecordByDisplayName(
+  const firstRecords =
+    getLocalFontRecordsByDisplayName(
       fonts,
       priority[
         0
@@ -1406,7 +1506,8 @@ function resolveDisplaySvg(
 
 
   if (
-    !firstRecord
+    firstRecords.length ===
+      0
   ) {
 
     return null;
@@ -1418,42 +1519,40 @@ function resolveDisplaySvg(
     of priority
   ) {
 
-    const fontRecord =
-      getLocalFontRecordByDisplayName(
+    const fontRecords =
+      getLocalFontRecordsByDisplayName(
         fonts,
         displayName
       );
 
 
-    if (
-      !fontRecord
-    ) {
-      continue;
-    }
-
-
-    const svg =
-      makeSvgGlyph(
-        fontRecord,
-        codePoint
-      );
-
-
-    if (
-      svg
+    for (
+      const fontRecord
+      of fontRecords
     ) {
 
-      return {
-        fontRecord,
+      const svg =
+        makeSvgGlyph(
+          fontRecord,
+          codePoint
+        );
+
+
+      if (
         svg
-      };
+      ) {
+
+        return {
+          fontRecord,
+          svg
+        };
+      }
     }
   }
 
 
   return null;
 }
-
 
 /* =========================================
    Generate one entry
