@@ -67,6 +67,90 @@ function getFontClass(
   }
 
 
+  /* Musical symbols */
+
+  if (
+    inRange(
+      codePoint,
+      0x1D100,
+      0x1D24F
+    )
+    ||
+    inRange(
+      codePoint,
+      0x2669,
+      0x266F
+    )
+  ) {
+    return "font-music";
+  }
+
+
+  const character =
+    String.fromCodePoint(
+      codePoint
+    );
+
+
+  /* Numbers */
+
+  if (
+    /\p{N}/u.test(
+      character
+    )
+  ) {
+    return "font-numbers";
+  }
+
+
+  /* Hiragana / Katakana / common Japanese Han */
+
+  if (
+    inRange(
+      codePoint,
+      0x3000,
+      0x30FF
+    )
+    ||
+    inRange(
+      codePoint,
+      0x31F0,
+      0x31FF
+    )
+    ||
+    inRange(
+      codePoint,
+      0x3400,
+      0x4DBF
+    )
+    ||
+    inRange(
+      codePoint,
+      0x4E00,
+      0x9FFF
+    )
+    ||
+    inRange(
+      codePoint,
+      0x1B000,
+      0x1B16F
+    )
+  ) {
+    return "font-japanese";
+  }
+
+
+  /* Common symbols / punctuation */
+
+  if (
+    /(?:\p{S}|\p{P})/u.test(
+      character
+    )
+  ) {
+    return "font-symbols-common";
+  }
+
+
   /* Kawi */
 
   if (
@@ -493,6 +577,28 @@ function getWebFontNames(
 
     case "font-phonetics":
       return [
+        "Noto Sans Phonetics"
+      ];
+
+
+    case "font-japanese":
+      return [
+        "Noto Sans JP"
+      ];
+
+
+    case "font-numbers":
+      return [
+        "Noto Sans Phonetics",
+        "Noto Sans JP",
+        "Noto Sans Symbols 2 Local"
+      ];
+
+
+    case "font-symbols-common":
+      return [
+        "Noto Sans Symbols 2 Local",
+        "Noto Sans JP",
         "Noto Sans Phonetics"
       ];
 
