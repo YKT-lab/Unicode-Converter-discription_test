@@ -7,7 +7,8 @@ const {
   DAILY_JSON_PATH,
   getJSTDateString,
   loadFonts,
-  generateEntry
+  generateEntry,
+  pickDailyCategory
 } = require("./generate-daily.js");
 
 
@@ -1062,7 +1063,16 @@ function researchCharacter(
     );
 
 
+  const category =
+    entry.category
+    ||
+    "general";
+
+
   const isHan =
+    category ===
+      "han"
+    ||
     script ===
       "Han";
 
@@ -1073,6 +1083,12 @@ function researchCharacter(
 
 
   const isSymbolLike =
+    category ===
+      "symbol"
+    ||
+    category ===
+      "music"
+    ||
     typeof generalCategory ===
       "string"
     &&
@@ -1131,14 +1147,78 @@ function researchCharacter(
       "han";
 
 
-    /*
-      漢字はUnihanに意味または日本語読みが
-      1つでもあれば説明可能とみなす。
-    */
-
     accepted =
       unihanFacts.length >
         0;
+
+  } else if (
+    hasIdentity
+    &&
+    category ===
+      "kana"
+  ) {
+
+    researchType =
+      "kana";
+
+
+    /*
+      仮名は正式Unicode名と実際の文字から
+      何の仮名か安全に説明できる。
+    */
+
+    accepted =
+      Boolean(
+        unicodeName
+      );
+
+  } else if (
+    hasIdentity
+    &&
+    category ===
+      "number"
+  ) {
+
+    researchType =
+      "number";
+
+
+    accepted =
+      Boolean(
+        unicodeName
+      );
+
+  } else if (
+    hasIdentity
+    &&
+    category ===
+      "music"
+  ) {
+
+    researchType =
+      "music";
+
+
+    accepted =
+      Boolean(
+        unicodeName
+      );
+
+  } else if (
+    hasIdentity
+    &&
+    category ===
+      "phonetics"
+  ) {
+
+    researchType =
+      "phonetics";
+
+
+    accepted =
+      Boolean(
+        unicodeName
+      );
 
   } else if (
     hasIdentity
@@ -1164,12 +1244,6 @@ function researchCharacter(
       "symbol";
 
 
-    /*
-      記号は正式Unicode名そのものが
-      形・種類を説明していることが多い。
-      NamesList注釈があればさらに利用する。
-    */
-
     accepted =
       Boolean(
         unicodeName
@@ -1179,16 +1253,10 @@ function researchCharacter(
     hasIdentity
   ) {
 
-    /*
-      その他の文字体系は従来どおり、
-      文字固有の強い情報を要求する。
-    */
-
     accepted =
       strongFacts.length >=
         2;
   }
-
 
   const sources = [
     {
@@ -1253,6 +1321,7 @@ function researchCharacter(
     researchType,
 
     metadata: {
+      category,
       unicodeName,
       block,
       script,
@@ -1308,6 +1377,10 @@ async function generateDescription(
     "usageには根拠のある用途・機能が確認できる場合だけ書き、資料に用途がなければ空文字列にしてください。",
     "UnihanのkDefinitionは漢字の意味、kJapaneseOnは日本語の音読み、kJapaneseKunは日本語の訓読みです。漢字ではこれらをsummaryに自然にまとめてください。",
     "記号ではUnicodeの正式名称を、その記号の形や種類を説明する根拠として使えます。ただし正式名称から実際の用途を推測しないでください。",
+    "かなではUnicode名と表示文字から、ひらがな・カタカナのどの文字かを簡潔に説明してください。資料にない語源や歴史は足さないでください。",
+    "数字ではUnicode名から確認できる数字・数値表現だけを説明し、用途を推測しないでください。",
+    "音楽記号ではUnicode名から確認できる記号名や音価の種類だけを説明し、楽典上の追加情報を勝手に補わないでください。",
+    "発音・転写文字ではUnicode名とNamesList注釈にある情報だけを使い、具体的な発音値を資料なしで推測しないでください。",
     "エジプト文字の転写はfactsのfunctionValueから別欄に表示するため、usageには混ぜないでください。",
     "supplementalInfoは本文を理解する助けになる追加情報だけにしてください。",
     "カタログ番号・分類番号・Unicode名・コードポイント・ブロック名・Unicode追加バージョンだけしか材料がない場合、supplementalInfoは必ず空文字列にしてください。",
@@ -1316,6 +1389,9 @@ async function generateDescription(
     entry.character +
       " U+" +
       entry.codePoint,
+    "",
+    "抽選カテゴリ:",
+    entry.category,
     "",
     "調査タイプ:",
     research.researchType,
@@ -1546,6 +1622,16 @@ async function generateAcceptedEntry(
     60;
 
 
+  const category =
+    pickDailyCategory();
+
+
+  console.log(
+    "Selected daily category: " +
+    category
+  );
+
+
   for (
     let attempt = 1;
     attempt <=
@@ -1557,7 +1643,8 @@ async function generateAcceptedEntry(
       generateEntry(
         fonts,
         date,
-        avoidCodePoint
+        avoidCodePoint,
+        category
       );
 
 
