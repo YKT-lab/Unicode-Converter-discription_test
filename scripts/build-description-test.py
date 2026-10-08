@@ -98,7 +98,7 @@ main.test-main{{max-width:920px}}
 .test-glyph{{display:block;width:110px;height:110px;max-width:100%;color:#1d1d1f;shape-rendering:geometricPrecision}}
 .test-code{{margin-top:10px;text-align:center;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,monospace;font-size:14px;font-weight:700;color:#3b3b3d}}
 .test-name{{margin-top:5px;text-align:center;color:#777;font-size:10px;font-weight:600;line-height:1.45;overflow-wrap:anywhere}}
-.test-trans{{display:flex;justify-content:center;gap:7px;margin-top:9px;color:#555;font-size:14px}}
+.test-trans{{display:flex;justify-content:center;gap:7px;margin-top:9px;color:#555;font-size:14px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Phonetics","Noto Sans",sans-serif}}
 .test-trans strong{{font-size:10px}}
 .test-info{{min-width:0;padding:16px;border:1px solid #e3e3e7;border-radius:16px;background:#fff;text-align:left}}
 .test-section+.test-section{{margin-top:14px}}
