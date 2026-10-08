@@ -72,7 +72,7 @@ function getFontClass(
   if (
     inRange(
       codePoint,
-      0x1D100,
+      0x1D000,
       0x1D24F
     )
     ||
@@ -83,23 +83,6 @@ function getFontClass(
     )
   ) {
     return "font-music";
-  }
-
-
-  const character =
-    String.fromCodePoint(
-      codePoint
-    );
-
-
-  /* Numbers */
-
-  if (
-    /\p{N}/u.test(
-      character
-    )
-  ) {
-    return "font-numbers";
   }
 
 
@@ -132,22 +115,17 @@ function getFontClass(
     ||
     inRange(
       codePoint,
+      0x1AFF0,
+      0x1AFFF
+    )
+    ||
+    inRange(
+      codePoint,
       0x1B000,
       0x1B16F
     )
   ) {
     return "font-japanese";
-  }
-
-
-  /* Common symbols / punctuation */
-
-  if (
-    /(?:\p{S}|\p{P})/u.test(
-      character
-    )
-  ) {
-    return "font-symbols-common";
   }
 
 
@@ -351,19 +329,6 @@ function getFontClass(
   }
 
 
-  /* Musical */
-
-  if (
-    inRange(
-      codePoint,
-      0x1D000,
-      0x1D24F
-    )
-  ) {
-    return "font-music";
-  }
-
-
   /* SignWriting */
 
   if (
@@ -555,6 +520,34 @@ function getFontClass(
     )
   ) {
     return "font-cjk-ext";
+  }
+
+
+  /* Generic numbers */
+
+  const character =
+    String.fromCodePoint(
+      codePoint
+    );
+
+
+  if (
+    /\p{N}/u.test(
+      character
+    )
+  ) {
+    return "font-numbers";
+  }
+
+
+  /* Generic symbols / punctuation */
+
+  if (
+    /(?:\p{S}|\p{P})/u.test(
+      character
+    )
+  ) {
+    return "font-symbols-common";
   }
 
 
