@@ -88,6 +88,30 @@ const FONT_FILES = [
 
     file:
       "fonts/NotoSansSymbols2-Regular.ttf"
+  },
+
+  {
+    name:
+      "Noto Sans Phonetics",
+
+    file:
+      "fonts/phonetics/NotoSans-Regular.ttf"
+  },
+
+  {
+    name:
+      "Noto Sans JP",
+
+    file:
+      "fonts/japanese/NotoSansJP-Variable.ttf"
+  },
+
+  {
+    name:
+      "Noto Music",
+
+    file:
+      "fonts/music/NotoMusic-Regular.ttf"
   }
 ];
 
@@ -250,6 +274,371 @@ function isGoodDailyCharacter(
 
 
   return true;
+}
+
+
+/* =========================================
+   Daily categories
+========================================= */
+
+const DAILY_CATEGORIES = [
+  "han",
+  "kana",
+  "number",
+  "symbol",
+  "music",
+  "phonetics",
+  "ancient"
+];
+
+
+function isInRange(
+  codePoint,
+  start,
+  end
+) {
+
+  return (
+    codePoint >=
+      start
+    &&
+    codePoint <=
+      end
+  );
+}
+
+
+function isPhoneticsCodePoint(
+  codePoint
+) {
+
+  return (
+    isInRange(
+      codePoint,
+      0x0250,
+      0x02FF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x0300,
+      0x036F
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x1D00,
+      0x1DBF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x1DC0,
+      0x1DFF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x1E00,
+      0x1EFF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0xA700,
+      0xA7FF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0xAB30,
+      0xAB6F
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x10780,
+      0x107BF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x1DF00,
+      0x1DFFF
+    )
+  );
+}
+
+
+function isKanaCodePoint(
+  codePoint
+) {
+
+  return (
+    isInRange(
+      codePoint,
+      0x3040,
+      0x30FF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x31F0,
+      0x31FF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x1AFF0,
+      0x1AFFF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x1B000,
+      0x1B16F
+    )
+  );
+}
+
+
+function isHanCodePoint(
+  codePoint
+) {
+
+  return (
+    isInRange(
+      codePoint,
+      0x3400,
+      0x4DBF
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x4E00,
+      0x9FFF
+    )
+  );
+}
+
+
+function isMusicCodePoint(
+  codePoint
+) {
+
+  return (
+    isInRange(
+      codePoint,
+      0x1D000,
+      0x1D24F
+    )
+    ||
+    isInRange(
+      codePoint,
+      0x2669,
+      0x266F
+    )
+  );
+}
+
+
+function isAncientCodePoint(
+  codePoint
+) {
+
+  /*
+    現在、文字固有の説明資料が十分にある
+    Egyptian Hieroglyphs Extended-A を
+    古代文字カテゴリに採用する。
+  */
+
+  return isInRange(
+    codePoint,
+    0x13460,
+    0x143FF
+  );
+}
+
+
+function getDailyCategory(
+  codePoint
+) {
+
+  if (
+    isMusicCodePoint(
+      codePoint
+    )
+  ) {
+    return "music";
+  }
+
+
+  if (
+    isPhoneticsCodePoint(
+      codePoint
+    )
+  ) {
+    return "phonetics";
+  }
+
+
+  if (
+    isKanaCodePoint(
+      codePoint
+    )
+  ) {
+    return "kana";
+  }
+
+
+  if (
+    isHanCodePoint(
+      codePoint
+    )
+  ) {
+    return "han";
+  }
+
+
+  if (
+    isAncientCodePoint(
+      codePoint
+    )
+  ) {
+    return "ancient";
+  }
+
+
+  const character =
+    String.fromCodePoint(
+      codePoint
+    );
+
+
+  if (
+    /\p{N}/u.test(
+      character
+    )
+  ) {
+    return "number";
+  }
+
+
+  if (
+    /(?:\p{S}|\p{P})/u.test(
+      character
+    )
+  ) {
+    return "symbol";
+  }
+
+
+  return null;
+}
+
+
+function pickDailyCategory() {
+
+  return DAILY_CATEGORIES[
+    randomIndex(
+      DAILY_CATEGORIES.length
+    )
+  ];
+}
+
+
+const categoryPoolCache =
+  new WeakMap();
+
+
+function getCategoryPools(
+  fonts
+) {
+
+  const cached =
+    categoryPoolCache.get(
+      fonts
+    );
+
+
+  if (
+    cached
+  ) {
+    return cached;
+  }
+
+
+  const sets =
+    Object.fromEntries(
+      DAILY_CATEGORIES.map(
+        (
+          category
+        ) => [
+          category,
+          new Set()
+        ]
+      )
+    );
+
+
+  for (
+    const fontRecord
+    of fonts
+  ) {
+
+    for (
+      const codePoint
+      of fontRecord.candidates
+    ) {
+
+      const category =
+        getDailyCategory(
+          codePoint
+        );
+
+
+      if (
+        category
+        &&
+        sets[
+          category
+        ]
+      ) {
+
+        sets[
+          category
+        ].add(
+          codePoint
+        );
+      }
+    }
+  }
+
+
+  const pools =
+    Object.fromEntries(
+      DAILY_CATEGORIES.map(
+        (
+          category
+        ) => [
+          category,
+          Array.from(
+            sets[
+              category
+            ]
+          )
+        ]
+      )
+    );
+
+
+  categoryPoolCache.set(
+    fonts,
+    pools
+  );
+
+
+  return pools;
 }
 
 
@@ -664,6 +1053,46 @@ function getDisplayFontPriority(
   */
 
   if (
+    isMusicCodePoint(
+      codePoint
+    )
+  ) {
+
+    return [
+      "Noto Music"
+    ];
+  }
+
+
+  if (
+    isPhoneticsCodePoint(
+      codePoint
+    )
+  ) {
+
+    return [
+      "Noto Sans Phonetics"
+    ];
+  }
+
+
+  if (
+    isKanaCodePoint(
+      codePoint
+    )
+    ||
+    isHanCodePoint(
+      codePoint
+    )
+  ) {
+
+    return [
+      "Noto Sans JP"
+    ];
+  }
+
+
+  if (
     inCodePointRange(
       codePoint,
       0x13460,
@@ -813,6 +1242,40 @@ function getDisplayFontPriority(
   }
 
 
+  const character =
+    String.fromCodePoint(
+      codePoint
+    );
+
+
+  if (
+    /\p{N}/u.test(
+      character
+    )
+  ) {
+
+    return [
+      "Noto Sans Phonetics",
+      "Noto Sans JP",
+      "Noto Sans Symbols 2"
+    ];
+  }
+
+
+  if (
+    /(?:\p{S}|\p{P})/u.test(
+      character
+    )
+  ) {
+
+    return [
+      "Noto Sans Symbols 2",
+      "Noto Sans JP",
+      "Noto Sans Phonetics"
+    ];
+  }
+
+
   return [];
 }
 
@@ -942,15 +1405,48 @@ function resolveDisplaySvg(
 function generateEntry(
   fonts,
   date,
-  avoidCodePoint = null
+  avoidCodePoint = null,
+  preferredCategory = null
 ) {
 
-  /*
-    失敗した候補は捨てて
-    別の文字を再抽選する。
+  const category =
+    preferredCategory
+    ||
+    pickDailyCategory();
 
-    daily.json に入る時点では
-    必ずSVG輪郭を取得済みにする。
+
+  const pools =
+    getCategoryPools(
+      fonts
+    );
+
+
+  const candidates =
+    pools[
+      category
+    ]
+    ||
+    [];
+
+
+  if (
+    candidates.length ===
+      0
+  ) {
+
+    throw new Error(
+      "No drawable candidates for daily category: " +
+      category
+    );
+  }
+
+
+  /*
+    先にカテゴリを決め、そのカテゴリの中で
+    コードポイントを均等に抽選する。
+
+    フォント数・収録文字数の差で
+    エジプト文字などへ偏るのを防ぐ。
   */
 
   for (
@@ -959,28 +1455,10 @@ function generateEntry(
     attempt++
   ) {
 
-    /*
-      フォントを先にランダム選択。
-
-      こうすることでPlangothicの
-      巨大な漢字数だけに
-      抽選が偏りすぎない。
-    */
-
-    const fontRecord =
-      fonts[
-        randomIndex(
-          fonts.length
-        )
-      ];
-
-
     const codePoint =
-      fontRecord.candidates[
+      candidates[
         randomIndex(
-          fontRecord
-            .candidates
-            .length
+          candidates.length
         )
       ];
 
@@ -992,12 +1470,6 @@ function generateEntry(
       continue;
     }
 
-
-    /*
-      抽選元のフォントではなく、
-      Unicode → 文字 と同じ優先順位で
-      実際に表示用フォントを選び直す。
-    */
 
     const resolved =
       resolveDisplaySvg(
@@ -1038,6 +1510,8 @@ function generateEntry(
     return {
       date,
 
+      category,
+
       codePoint:
         hex,
 
@@ -1052,7 +1526,8 @@ function generateEntry(
 
 
   throw new Error(
-    "Could not generate a drawable daily character."
+    "Could not generate a drawable daily character for category: " +
+    category
   );
 }
 
@@ -1219,5 +1694,7 @@ module.exports = {
   getJSTDateString,
   loadFonts,
   generateEntry,
+  pickDailyCategory,
+  getDailyCategory,
   loadExistingDailyData
 };
