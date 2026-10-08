@@ -374,10 +374,67 @@ function isKanaCodePoint(
   codePoint
 ) {
 
+  const inKanaRange =
+    (
+      isInRange(
+        codePoint,
+        0x3040,
+        0x30FF
+      )
+      ||
+      isInRange(
+        codePoint,
+        0x31F0,
+        0x31FF
+      )
+      ||
+      isInRange(
+        codePoint,
+        0x1AFF0,
+        0x1AFFF
+      )
+      ||
+      isInRange(
+        codePoint,
+        0x1B000,
+        0x1B16F
+      )
+    );
+
+
+  if (
+    !inKanaRange
+  ) {
+    return false;
+  }
+
+
+  const character =
+    String.fromCodePoint(
+      codePoint
+    );
+
+
+  return (
+    /\p{Script=Hiragana}/u.test(
+      character
+    )
+    ||
+    /\p{Script=Katakana}/u.test(
+      character
+    )
+  );
+}
+
+
+function isJapaneseDisplayCodePoint(
+  codePoint
+) {
+
   return (
     isInRange(
       codePoint,
-      0x3040,
+      0x3000,
       0x30FF
     )
     ||
@@ -385,6 +442,10 @@ function isKanaCodePoint(
       codePoint,
       0x31F0,
       0x31FF
+    )
+    ||
+    isHanCodePoint(
+      codePoint
     )
     ||
     isInRange(
@@ -1077,11 +1138,7 @@ function getDisplayFontPriority(
 
 
   if (
-    isKanaCodePoint(
-      codePoint
-    )
-    ||
-    isHanCodePoint(
+    isJapaneseDisplayCodePoint(
       codePoint
     )
   ) {
